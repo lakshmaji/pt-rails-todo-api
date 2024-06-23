@@ -27,9 +27,23 @@ RSpec.describe UpdateTask do
 
       it 'updates the task with correct status' do
         expect do
-          update_task.execute(task.id, { title: task.title, status: 2 })
+          update_task.execute(task.id, { title: task.title, status: :completed })
           task.reload
-        end.to change(task, :status).to(TaskEntity::IN_PROGRESS)
+        end.to change(task, :status).from('todo').to('completed')
+      end
+
+      it 'throw error with in correct status' do
+        expect do
+          update_task.execute(task.id, { title: task.title, status: :unknown })
+        end.to raise_error(UpdateTask::ValidationError)
+      end
+
+      it 'not update the task with in correct status' do
+        expect do
+          update_task.execute(task.id, { title: task.title, status: :unknown })
+        rescue StandardError
+          task.reload
+        end.not_to change(task, :status)
       end
     end
 

@@ -76,7 +76,7 @@ RSpec.describe 'Tasks', type: :request do
                    user_id: { type: :integer },
                    created_at: { type: :string, format: :datetime },
                    updated_at: { type: :string, format: :datetime },
-                   status: { type: :integer }
+                   status: { type: :string }
                  }
                }
 
@@ -99,7 +99,7 @@ RSpec.describe 'Tasks', type: :request do
                    user_id: { type: :integer },
                    created_at: { type: :string, format: :datetime },
                    updated_at: { type: :string, format: :datetime },
-                   status: { type: :integer }
+                   status: { type: :string }
                  }
                }
 
@@ -160,8 +160,8 @@ RSpec.describe 'Tasks', type: :request do
             description: { type: :string },
             status: {
               type: :integer,
-              enum: [1, 2, 3],
-              description: '1 for TODO, 2 for IN_PROGRESS, 3 for DONE'
+              enum: %w[todo in_progress completed],
+              description: 'todo, in_progress, completed'
             }
           }
         }
@@ -195,7 +195,7 @@ RSpec.describe 'Tasks', type: :request do
                        user_id: { type: :integer },
                        created_at: { type: :string, format: :datetime },
                        updated_at: { type: :string, format: :datetime },
-                       status: { type: :integer }
+                       status: { type: :string }
                      }
                    }
                  }
@@ -215,12 +215,13 @@ RSpec.describe 'Tasks', type: :request do
           let(:task_params) do
             {
               title: task.title,
-              status: 2
+              status: :in_progress
             }
           end
           request_body_example value: {
-            status: 3
-          }, name: 'task_status', summary: 'Update task status. Allowed values 1 = Todo, 2= In Progress, 3 Completed'
+            status: :in_progress,
+            title: 'Title'
+          }, name: 'task_status', summary: 'Update task status. Allowed values todo, in_progress, completed'
           schema type: :object,
                  properties: {
                    message: { type: :string },
@@ -233,14 +234,14 @@ RSpec.describe 'Tasks', type: :request do
                        user_id: { type: :integer },
                        created_at: { type: :string, format: :datetime },
                        updated_at: { type: :string, format: :datetime },
-                       status: { type: :integer }
+                       status: { type: :string }
                      }
                    }
                  }
 
           run_test! do |response|
             expect(response).to have_http_status(:ok)
-            expect(Task.find(task.id).attributes).to include('status' => TaskEntity::IN_PROGRESS)
+            expect(Task.find(task.id).status).to eq('in_progress')
           end
         end
 
