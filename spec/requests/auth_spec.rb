@@ -21,7 +21,9 @@ RSpec.describe 'auth', type: :request do
                                                          properties: {
                                                            email: { type: :string },
                                                            password: { type: :string },
-                                                           password_confirmation: { type: :string }
+                                                           password_confirmation: { type: :string },
+                                                           first_name: { type: :string },
+                                                           last_name: { type: :string }
                                                          },
                                                          required: %w[email password password_confirmation]
                                                        },
@@ -38,7 +40,9 @@ RSpec.describe 'auth', type: :request do
         user: {
           email: 'user@example.com',
           password: 'password',
-          password_confirmation: 'password'
+          password_confirmation: 'password',
+          first_name: 'L',
+          last_name: 'M'
         },
         client_id: 'webapp_id'
       }, name: '1', summary: 'Success 201'
@@ -49,7 +53,9 @@ RSpec.describe 'auth', type: :request do
             user: {
               email: 'user@example.com',
               password: 'password',
-              password_confirmation: 'password'
+              password_confirmation: 'password',
+              first_name: 'L',
+              last_name: 'M'
             },
             client_id: 'webapp_id'
           }
