@@ -48,6 +48,6 @@ class TasksController < ActionController::API
   private
 
   def task_params
-    params.require(:task).permit(:title, :description, :user_id)
+    params.require(:task).permit(:title, :description, :status)
   end
 end

@@ -157,16 +157,16 @@ RSpec.describe 'Tasks', type: :request do
           type: :object,
           properties: {
             title: { type: :string },
-            description: { type: :string }
+            description: { type: :string },
+            status: {
+              type: :integer,
+              enum: [1, 2, 3],
+              description: '1 for TODO, 2 for IN_PROGRESS, 3 for DONE'
+            }
           }
         }
 
-        request_body_example value: {
-          title: 'New title',
-          description: 'New description'
-        }, name: 'basic', summary: 'Update task by id'
-
-        response '200', 'task updated' do
+        response '200', 'update title, description' do
           let(:token) { token_scopes('public manage') }
           let(:Authorization) { "Bearer #{token.token}" }
           let(:task) { create(:task) }
@@ -178,6 +178,10 @@ RSpec.describe 'Tasks', type: :request do
               description: 'Updated description'
             }
           end
+          request_body_example value: {
+            title: 'New title',
+            description: 'New description'
+          }, name: 'task_title_desc', summary: 'Update task by id'
 
           schema type: :object,
                  properties: {
@@ -199,6 +203,44 @@ RSpec.describe 'Tasks', type: :request do
           run_test! do |response|
             expect(response).to have_http_status(:ok)
             expect(Task.find(task.id).attributes).to include('title' => 'Updated title')
+          end
+        end
+
+        response '200', 'update status' do
+          let(:token) { token_scopes('public manage') }
+          let(:Authorization) { "Bearer #{token.token}" }
+          let(:task) { create(:task) }
+          let(:id) { task.id }
+
+          let(:task_params) do
+            {
+              title: task.title,
+              status: 2
+            }
+          end
+          request_body_example value: {
+            status: 3
+          }, name: 'task_status', summary: 'Update task status. Allowed values 1 = Todo, 2= In Progress, 3 Completed'
+          schema type: :object,
+                 properties: {
+                   message: { type: :string },
+                   task: {
+                     type: :object,
+                     properties: {
+                       id: { type: :integer },
+                       title: { type: :string },
+                       description: { type: :string },
+                       user_id: { type: :integer },
+                       created_at: { type: :string, format: :datetime },
+                       updated_at: { type: :string, format: :datetime },
+                       status: { type: :integer }
+                     }
+                   }
+                 }
+
+          run_test! do |response|
+            expect(response).to have_http_status(:ok)
+            expect(Task.find(task.id).attributes).to include('status' => TaskEntity::IN_PROGRESS)
           end
         end
 
@@ -229,6 +271,8 @@ RSpec.describe 'Tasks', type: :request do
           let(:task_params) do
             {}
           end
+
+          request_body_example value: {}, name: 'task_no_data', summary: 'Update task with no info'
 
           run_test! do
             expect(response).to have_http_status(:internal_server_error)

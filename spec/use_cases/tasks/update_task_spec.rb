@@ -24,6 +24,13 @@ RSpec.describe UpdateTask do
           expect(error.message).to include({ field: 'Title', message: "can't be blank" }.to_s)
         }
       end
+
+      it 'updates the task with correct status' do
+        expect do
+          update_task.execute(task.id, { title: task.title, status: 2 })
+          task.reload
+        end.to change(task, :status).to(TaskEntity::IN_PROGRESS)
+      end
     end
 
     context 'when the task does not exist' do
