@@ -46,5 +46,11 @@ end
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+  gem "rubocop-performance", "~> 1.21"
+  gem "rubocop-rails", "~> 2.25"
+  gem "rubocop-rspec_rails", "~> 2.30"
+  gem "rubocop-factory_bot", "~> 2.26"
 end
+
+
 
