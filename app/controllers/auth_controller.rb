@@ -2,6 +2,8 @@
 
 # RegsitartionsController
 class AuthController < ApplicationController
+  before_action :doorkeeper_authorize!, only: [:current_user]
+
   def signup
     client_app = Doorkeeper::Application.find_by(uid: client_params[:client_id])
 
@@ -16,6 +18,16 @@ class AuthController < ApplicationController
       render json: @results, status: :created
     else
       render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def current_user
+    @user = User.find(doorkeeper_token.resource_owner_id)
+
+    if @user
+      render json: @user
+    else
+      render(json: { error_message: 'User not authorized' }, status: :unauthorized)
     end
   end
 

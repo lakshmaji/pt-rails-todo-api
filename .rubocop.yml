@@ -13,8 +13,12 @@ AllCops:
     - 'config/puma.rb'
     - 'db/schema.rb'
     - 'db/migrate/*'
+    - 'config/initializers/devise.rb'
 
 Metrics/LineLength:
   Max: 120
 Metrics/MethodLength:
   Max: 20
+RSpec/VariableName:
+  IgnoredPatterns:
+    - 'Authorization'

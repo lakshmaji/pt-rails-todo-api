@@ -13,4 +13,6 @@ Rails.application.routes.draw do
   scope 'auth' do
     post 'signup', to: 'auth#signup'
   end
+
+  get 'me', to: 'auth#current_user'
 end

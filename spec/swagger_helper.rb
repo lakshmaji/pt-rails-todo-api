@@ -33,8 +33,21 @@ RSpec.configure do |config|
               default: 'http'
             }
           }
+        },
+        {
+          url: 'http://localhost:3001',
+          description: 'Local server'
         }
-      ]
+      ],
+      components: {
+        securitySchemes: {
+          bearer_auth: {
+            type: :http,
+            scheme: :bearer
+          }
+        }
+      }
+
     }
   }
 

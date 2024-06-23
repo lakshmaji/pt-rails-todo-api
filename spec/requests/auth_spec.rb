@@ -3,11 +3,6 @@
 require 'swagger_helper'
 
 RSpec.describe 'auth', type: :request do
-  let!(:client_app) do
-    Doorkeeper::Application.create!(name: 'Test App', redirect_uri: 'urn:ietf:wg:oauth:2.0:oob', uid: 'webapp_id',
-                                    secret: 'webapp_secret')
-  end
-
   path '/auth/signup' do
     post 'Register a user' do
       tags 'Authentication'
@@ -36,6 +31,7 @@ RSpec.describe 'auth', type: :request do
                                                    },
                 required: true
 
+      let!(:token) { token_scopes('public manage') }
       request_body_example value: {
         user: {
           email: 'user@example.com',
@@ -76,6 +72,38 @@ RSpec.describe 'auth', type: :request do
         run_test! do |response|
           expect(response).to have_http_status(:unprocessable_entity)
         end
+      end
+    end
+  end
+
+  path '/me' do
+    get 'Get current user' do
+      tags 'User Profile'
+      produces 'application/json'
+      security [bearer_auth: []]
+
+      response '200', 'user found' do
+        let(:token) { token_scopes('public manage') }
+
+        let(:Authorization) { "Bearer #{token.token}" }
+
+        schema type: :object,
+               properties: {
+                 id: { type: :integer },
+                 email: { type: :string },
+                 first_name: { type: :string },
+                 last_name: { type: :string }
+               }
+
+        run_test! do
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      response '401', 'user not authorized' do
+        let(:Authorization) { 'Bearer invalid_token' }
+
+        run_test!
       end
     end
   end
