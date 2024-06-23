@@ -29,6 +29,22 @@ class TasksController < ActionController::API
     end
   end
 
+  def update
+    task_repository = TaskRepository.new
+    begin
+      task = UpdateTask.new(task_repository).execute(params[:id].to_i, task_params)
+      render json: { task:, message: 'Task updated successfully' }, status: :ok
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'No task found' }, status: :not_found
+    rescue UpdateTask::ValidationError => e
+      render json: { errors: e.errors }, status: :unprocessable_entity
+    rescue StandardError => e
+      Rails.logger.error("Failed to update task: #{e.message}")
+
+      render json: { error: 'Failed to update task' }, status: :internal_server_error
+    end
+  end
+
   private
 
   def task_params

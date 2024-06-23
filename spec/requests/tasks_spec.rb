@@ -145,5 +145,97 @@ RSpec.describe 'Tasks', type: :request do
         end
       end
     end
+    path '/task/{id}' do
+      put 'Update task' do
+        tags 'Tasks'
+        consumes 'application/json'
+        produces 'application/json'
+        security [bearer_auth: []]
+
+        parameter name: :id, in: :path, type: :integer
+        parameter name: :task_params, in: :body, required: false, schema: {
+          type: :object,
+          properties: {
+            title: { type: :string },
+            description: { type: :string }
+          }
+        }
+
+        request_body_example value: {
+          title: 'New title',
+          description: 'New description'
+        }, name: 'basic', summary: 'Update task by id'
+
+        response '200', 'task updated' do
+          let(:token) { token_scopes('public manage') }
+          let(:Authorization) { "Bearer #{token.token}" }
+          let(:task) { create(:task) }
+          let(:id) { task.id }
+
+          let(:task_params) do
+            {
+              title: 'Updated title',
+              description: 'Updated description'
+            }
+          end
+
+          schema type: :object,
+                 properties: {
+                   message: { type: :string },
+                   task: {
+                     type: :object,
+                     properties: {
+                       id: { type: :integer },
+                       title: { type: :string },
+                       description: { type: :string },
+                       user_id: { type: :integer },
+                       created_at: { type: :string, format: :datetime },
+                       updated_at: { type: :string, format: :datetime },
+                       status: { type: :integer }
+                     }
+                   }
+                 }
+
+          run_test! do |response|
+            expect(response).to have_http_status(:ok)
+            expect(Task.find(task.id).attributes).to include('title' => 'Updated title')
+          end
+        end
+
+        response '404', 'task not found' do
+          let(:token) { token_scopes('public manage') }
+          let(:Authorization) { "Bearer #{token.token}" }
+
+          let(:id) { 'invalid' }
+          let(:task_params) do
+            {
+              title: 'Updated title',
+              description: 'Updated description'
+            }
+          end
+
+          run_test! do
+            expect(response).to have_http_status(:not_found)
+            expect(response.body).to match(/no task found/i)
+          end
+        end
+
+        response '500', 'failed to update task' do
+          let(:token) { token_scopes('public manage') }
+          let(:Authorization) { "Bearer #{token.token}" }
+          let(:task) { create(:task) }
+          let(:id) { task.id }
+
+          let(:task_params) do
+            {}
+          end
+
+          run_test! do
+            expect(response).to have_http_status(:internal_server_error)
+            expect(response.body).to match(/Failed to update task/i)
+          end
+        end
+      end
+    end
   end
 end
