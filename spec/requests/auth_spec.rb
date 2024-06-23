@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'swagger_helper'
-
 RSpec.describe 'auth', type: :request do
   path '/auth/signup' do
     post 'Register a user' do
