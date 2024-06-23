@@ -41,6 +41,8 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem "rspec-rails", "~> 6.1"
   gem "factory_bot_rails", "~> 6.4"
+  gem "rswag-specs", "~> 2.13"
+  gem "faker", "~> 3.4"
 end
 
 group :development do
@@ -52,6 +54,8 @@ group :development do
   gem "rubocop-factory_bot", "~> 2.26"
 end
 
-group :test do
-  gem "faker", "~> 3.4"
-end
+gem "rswag-ui", "~> 2.13"
+gem "rswag-api", "~> 2.13"
+
+
+gem "rswag", "~> 2.13"
