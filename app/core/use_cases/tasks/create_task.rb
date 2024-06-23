@@ -6,8 +6,8 @@ class CreateTask
     @repository = repository
   end
 
-  def execute(task_params)
-    task = Entities::Task.new(task_params)
-    @repository.save(title: task.title, description: task.description, status: 0)
+  def execute(task_params, user_id)
+    task = Entities::Task.new(task_params.merge(user_id:))
+    @repository.save(title: task.title, description: task.description, status: 0, user_id: task.user_id)
   end
 end

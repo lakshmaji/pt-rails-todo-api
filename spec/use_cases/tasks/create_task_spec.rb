@@ -12,9 +12,9 @@ RSpec.describe CreateTask, type: :use_case do
   it 'creates a task' do
     task = Task.new(task_params)
     allow(task_repository).to receive(:save).with(description: task[:description], status: 0,
-                                                  title: task[:title]).and_return(model_task)
+                                                  title: task[:title], user_id: user.id).and_return(model_task)
 
-    result = create_task.execute(task_params)
+    result = create_task.execute(task_params, user.id)
     expect(result).to be_a(Task)
   end
 end
