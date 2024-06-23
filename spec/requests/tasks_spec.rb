@@ -31,13 +31,23 @@ RSpec.describe 'Tasks', type: :request do
       response '201', 'task created' do
         let(:register_params) do
           {
-            title: 'user@example.com',
+            title: 'Some title',
             description: 'password'
           }
         end
 
         run_test! do |response|
           expect(response).to have_http_status(:created)
+        end
+      end
+
+      response '422', 'invalid request' do
+        let(:register_params) { { description: 'without title' } }
+        request_body_example value: {
+          description: 'without title'
+        }, name: 2, summary: 'Invalid input 422'
+        run_test! do |response|
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end

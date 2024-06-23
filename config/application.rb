@@ -13,7 +13,7 @@ module Todo
   class Application < Rails::Application
     config.autoload_paths << "#{root}/app/adapters/controllers"
     config.autoload_paths << "#{root}/app/adapters/repositories"
-    config.autoload_paths << "#{root}/app/core"
+    config.autoload_paths << "#{root}/app/core/entities"
     config.autoload_paths << "#{root}/app/core/use_cases/tasks"
 
     # Initialize configuration defaults for originally generated Rails version.
