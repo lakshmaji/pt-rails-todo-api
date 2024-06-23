@@ -12,6 +12,5 @@ Rails.application.routes.draw do
   # root "articles#index"
   scope 'auth' do
     post 'signup', to: 'auth#signup'
-    post 'login', to: 'auth#login'
   end
 end
