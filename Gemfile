@@ -66,3 +66,7 @@ gem "devise", "~> 4.9"
 gem "doorkeeper", "~> 5.7"
 
 gem "jsonapi-serializer", "~> 2.2"
+
+gem "kaminari", "~> 1.2"
+
+gem "rack-cors", "~> 2.0"

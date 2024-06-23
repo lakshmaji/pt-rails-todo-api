@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 # Tasks controller
-class TasksController < ActionController::API
+class TasksController < ApplicationController
   before_action :doorkeeper_authorize!
 
+  def initialize(*args)
+    super
+    @task_repository = TaskRepository.new
+  end
+
   def create
-    create_task = CreateTask.new(TaskRepository.new)
+    create_task = CreateTask.new(@task_repository)
     begin
       task = create_task.execute(task_params, doorkeeper_token.resource_owner_id)
       render json: TaskSerializer.new(task).serializable_hash.to_json, status: :created
@@ -15,12 +20,19 @@ class TasksController < ActionController::API
   end
 
   def index
-    posts = ListTasks.new(TaskRepository.new).execute
-    render json: TaskSerializer.new(posts).serializable_hash.to_json
+    page = params[:page] || 1
+    per_page = params[:per_page] || 10
+    status = params[:status]
+
+    result = ListTasks.new(@task_repository).execute(page:, per_page:, status:)
+    tasks = result[:tasks]
+    total_count = result[:total_count]
+
+    render json: PaginationSerializer.new(tasks, total_count:).serializable_hash.to_json
   end
 
   def destroy
-    task_repository = TaskRepository.new
+    task_repository = @task_repository
     begin
       DeleteTask.new(task_repository).execute(params[:id].to_i)
       render json: { message: 'Task deleted successfully' }, status: :no_content
@@ -30,7 +42,7 @@ class TasksController < ActionController::API
   end
 
   def update
-    task_repository = TaskRepository.new
+    task_repository = @task_repository
     begin
       task = UpdateTask.new(task_repository).execute(params[:id].to_i, task_params)
       render json: TaskSerializer.new(task).serializable_hash.merge(message: 'Task updated successfully'),
@@ -39,8 +51,6 @@ class TasksController < ActionController::API
       render json: { error: 'No task found' }, status: :not_found
     rescue UpdateTask::ValidationError => e
       render json: { errors: e.errors }, status: :unprocessable_entity
-    # rescue ArgumentError => e
-    #   render json: { errors: [e.message] }, status: :unprocessable_entity
     rescue StandardError => e
       Rails.logger.error("Failed to update task: #{e.message}")
       render json: { error: 'Failed to update task' }, status: :internal_server_error
