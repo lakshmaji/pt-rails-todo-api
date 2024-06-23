@@ -2,8 +2,9 @@
 
 FactoryBot.define do
   factory :task do
-    title { 'My Task' }
+    sequence(:title) { |n| "Task #{n}" }
     description { 'Task description' }
-    status { 1 }
+    status { 0 }
+    association :user, factory: :user
   end
 end

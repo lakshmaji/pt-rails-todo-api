@@ -16,4 +16,5 @@ Rails.application.routes.draw do
 
   get 'me', to: 'auth#current_user'
   post 'task', to: 'tasks#create'
+  get 'task', to: 'tasks#index'
 end

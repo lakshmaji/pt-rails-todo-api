@@ -14,6 +14,11 @@ class TasksController < ActionController::API
     end
   end
 
+  def index
+    posts = ListTasks.new(TaskRepository.new).execute
+    render json: posts
+  end
+
   private
 
   def task_params
