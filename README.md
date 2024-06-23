@@ -5,13 +5,18 @@ application up and running.
 
 Things you may want to cover:
 
-* Ruby version
+* Ruby version: 3.2.2
 
 * System dependencies
 
 * Configuration
 
 * Database creation
+  
+    ```bash
+    docker-compose up
+    bin/rails db:create
+    ```
 
 * Database initialization
 
@@ -22,3 +27,4 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
