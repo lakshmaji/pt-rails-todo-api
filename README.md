@@ -10,6 +10,10 @@ Things you may want to cover:
 * System dependencies
 
 * Configuration
+    
+    ```bash
+    bin/rails credentials:edit --environment development
+    ```
 
 * Database creation
   
