@@ -14,6 +14,11 @@ Things you may want to cover:
     ```bash
     bin/rails credentials:edit --environment development
     ```
+* API docs
+
+    ```bash
+    bin/rails rswag:specs:swaggerize 
+    ```
 
 * Database creation
   

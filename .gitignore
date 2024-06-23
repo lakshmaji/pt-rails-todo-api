@@ -31,3 +31,4 @@
 /config/credentials/development.key
 
 /config/credentials/test.key
+swagger/v1/swagger.yaml

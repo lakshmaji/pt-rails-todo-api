@@ -11,3 +11,10 @@ AllCops:
     - Rakefile
     - 'bin/**/*'
     - 'config/puma.rb'
+    - 'db/schema.rb'
+    - 'db/migrate/*'
+
+Metrics/LineLength:
+  Max: 120
+Metrics/MethodLength:
+  Max: 20
