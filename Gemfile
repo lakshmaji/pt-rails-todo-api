@@ -59,3 +59,5 @@ gem "rswag-api", "~> 2.13"
 
 
 gem "rswag", "~> 2.13"
+
+gem "devise", "~> 4.9"
