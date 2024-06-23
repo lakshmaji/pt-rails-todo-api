@@ -15,4 +15,5 @@ Rails.application.routes.draw do
   end
 
   get 'me', to: 'auth#current_user'
+  post 'task', to: 'tasks#create'
 end
