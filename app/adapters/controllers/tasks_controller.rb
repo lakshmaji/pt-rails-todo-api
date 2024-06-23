@@ -19,6 +19,16 @@ class TasksController < ActionController::API
     render json: posts
   end
 
+  def destroy
+    task_repository = TaskRepository.new
+    begin
+      DeleteTask.new(task_repository).execute(params[:id].to_i)
+      render json: { message: 'Task deleted successfully' }, status: :no_content
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'No task found' }, status: :not_found
+    end
+  end
+
   private
 
   def task_params

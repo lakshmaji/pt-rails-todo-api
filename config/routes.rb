@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   end
 
   get 'me', to: 'auth#current_user'
+  delete 'task/:id', to: 'tasks#destroy'
   post 'task', to: 'tasks#create'
   get 'task', to: 'tasks#index'
 end

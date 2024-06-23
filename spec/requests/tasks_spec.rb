@@ -109,5 +109,41 @@ RSpec.describe 'Tasks', type: :request do
         end
       end
     end
+
+    path '/task/{id}' do
+      delete 'Delete task' do
+        tags 'Tasks'
+        consumes 'application/json'
+        produces 'application/json'
+        security [bearer_auth: []]
+        parameter name: :id, in: :path, type: :integer
+        request_body_example value: { some_field: '123' }, name: 'basic', summary: 'Delete task by id'
+
+        response '204', 'delete task' do
+          let(:token) { token_scopes('public manage') }
+
+          let(:Authorization) { "Bearer #{token.token}" }
+          let(:task) { create(:task) }
+          let(:id) { task.id }
+
+          run_test! do
+            expect(response).to have_http_status(:no_content)
+            expect(Task).not_to exist(task.id)
+          end
+        end
+
+        response '404', 'task not found' do
+          let(:token) { token_scopes('public manage') }
+          let(:Authorization) { "Bearer #{token.token}" }
+
+          let(:id) { 'invalid' }
+
+          run_test! do
+            expect(response).to have_http_status(:not_found)
+            expect(response.body).to match(/no task found/i)
+          end
+        end
+      end
+    end
   end
 end
