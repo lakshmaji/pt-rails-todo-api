@@ -86,6 +86,8 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.5.1)
+    doorkeeper (5.7.0)
+      railties (>= 5)
     erubi (1.13.0)
     factory_bot (6.4.6)
       activesupport (>= 5.0.0)
@@ -268,6 +270,7 @@ DEPENDENCIES
   bootsnap
   debug
   devise (~> 4.9)
+  doorkeeper (~> 5.7)
   factory_bot_rails (~> 6.4)
   faker (~> 3.4)
   mysql2 (~> 0.5)

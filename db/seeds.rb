@@ -7,3 +7,10 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+Doorkeeper::Application.find_or_create_by(name: 'Web APP') do |app|
+  app.redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
+  app.secret = 'web_app_secret'
+  app.uid = 'webapp_id'
+  app.save!
+end
