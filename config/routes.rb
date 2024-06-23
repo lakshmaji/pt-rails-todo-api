@@ -10,13 +10,13 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  scope 'auth' do
-    post 'signup', to: 'auth#signup'
-  end
 
-  get 'me', to: 'auth#current_user'
-  delete 'task/:id', to: 'tasks#destroy'
-  post 'task', to: 'tasks#create'
-  get 'task', to: 'tasks#index'
-  put 'task/:id', to: 'tasks#update'
+  scope '/v1' do
+    scope 'auth' do
+      post 'signup', to: 'auth#signup'
+    end
+
+    get 'me', to: 'auth#current_user'
+    resources :tasks, only: %i[create index update destroy]
+  end
 end

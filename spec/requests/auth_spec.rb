@@ -2,7 +2,7 @@
 
 require 'swagger_helper'
 RSpec.describe 'auth', type: :request do
-  path '/auth/signup' do
+  path '/v1/auth/signup' do
     post 'Register a user' do
       tags 'Authentication'
       consumes 'application/json'
@@ -75,7 +75,7 @@ RSpec.describe 'auth', type: :request do
     end
   end
 
-  path '/me' do
+  path '/v1/me' do
     get 'Get current user' do
       tags 'User Profile'
       produces 'application/json'
