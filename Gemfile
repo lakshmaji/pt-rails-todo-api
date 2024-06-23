@@ -52,5 +52,6 @@ group :development do
   gem "rubocop-factory_bot", "~> 2.26"
 end
 
-
-
+group :test do
+  gem "faker", "~> 3.4"
+end
