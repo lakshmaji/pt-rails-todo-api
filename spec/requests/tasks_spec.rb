@@ -36,6 +36,32 @@ RSpec.describe 'Tasks', type: :request do
           }
         end
 
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     id: { type: :string },
+                     type: { type: 'task' },
+                     attributes: {
+                       type: :object,
+                       properties: {
+                         id: { type: :integer },
+                         title: { type: :string },
+                         description: { type: :string },
+                         user_id: { type: :integer },
+                         created_at: { type: :string, format: :datetime },
+                         updated_at: { type: :string, format: :datetime },
+                         status: {
+                           type: :string,
+                           enum: %w[todo in_progress completed],
+                           description: 'todo, in_progress, completed'
+                         }
+                       }
+                     }
+                   }
+                 }
+               }
         run_test! do |response|
           expect(response).to have_http_status(:created)
         end
@@ -66,22 +92,35 @@ RSpec.describe 'Tasks', type: :request do
           create_list(:task, 5)
         end
 
-        schema type: :array,
-               items: {
-                 type: :object,
-                 properties: {
-                   id: { type: :integer },
-                   title: { type: :string },
-                   description: { type: :string },
-                   user_id: { type: :integer },
-                   created_at: { type: :string, format: :datetime },
-                   updated_at: { type: :string, format: :datetime },
-                   status: { type: :string }
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :string },
+                       type: { type: 'task' },
+                       attributes: {
+                         id: { type: :integer },
+                         title: { type: :string },
+                         description: { type: :string },
+                         user_id: { type: :integer },
+                         created_at: { type: :string, format: :datetime },
+                         updated_at: { type: :string, format: :datetime },
+                         status: { type: :string }
+                       }
+                     }
+                   }
                  }
                }
-
+        example 'application/json', :task_records, {
+          "data": [
+            { 'id' => '753', 'type' => 'task', 'attributes' => { 'id' => 753, 'title' => 'Task 1', 'description' => 'Task description', 'status' => 'todo', 'created_at' => '2024-06-24T16:41:28.268Z', 'updated_at' => '2024-06-24T16:41:28.268Z' } }
+          ]
+        }, 'Records'
         run_test! do
-          expect(JSON.parse(response.body).size).to eq(5)
+          expect(JSON.parse(response.body)['data'].size).to eq(5)
         end
       end
 
@@ -89,23 +128,12 @@ RSpec.describe 'Tasks', type: :request do
         let(:token) { token_scopes('public manage') }
         let(:Authorization) { "Bearer #{token.token}" }
 
-        schema type: :array,
-               items: {
-                 type: :object,
-                 properties: {
-                   id: { type: :integer },
-                   title: { type: :string },
-                   description: { type: :string },
-                   user_id: { type: :integer },
-                   created_at: { type: :string, format: :datetime },
-                   updated_at: { type: :string, format: :datetime },
-                   status: { type: :string }
-                 }
-               }
-
-        let(:posts) { create_list(:task, 5) }
+        let(:tasks) { create_list(:task, 5) }
+        example 'application/json', :no_tasks, {
+          data: []
+        }, 'Empty'
         run_test! do
-          expect(JSON.parse(response.body).size).to eq(0)
+          expect(JSON.parse(response.body)['data'].size).to eq(0)
         end
       end
     end
@@ -186,16 +214,27 @@ RSpec.describe 'Tasks', type: :request do
           schema type: :object,
                  properties: {
                    message: { type: :string },
-                   task: {
+                   data: {
                      type: :object,
                      properties: {
-                       id: { type: :integer },
-                       title: { type: :string },
-                       description: { type: :string },
-                       user_id: { type: :integer },
-                       created_at: { type: :string, format: :datetime },
-                       updated_at: { type: :string, format: :datetime },
-                       status: { type: :string }
+                       id: { type: :string },
+                       type: { type: 'task' },
+                       attributes: {
+                         type: :object,
+                         properties: {
+                           id: { type: :integer },
+                           title: { type: :string },
+                           description: { type: :string },
+                           user_id: { type: :integer },
+                           created_at: { type: :string, format: :datetime },
+                           updated_at: { type: :string, format: :datetime },
+                           status: {
+                             type: :string,
+                             enum: %w[todo in_progress completed],
+                             description: 'todo, in_progress, completed'
+                           }
+                         }
+                       }
                      }
                    }
                  }

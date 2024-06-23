@@ -8,7 +8,7 @@ class TasksController < ActionController::API
     create_task = CreateTask.new(TaskRepository.new)
     begin
       task = create_task.execute(task_params, doorkeeper_token.resource_owner_id)
-      render json: task, status: :created
+      render json: TaskSerializer.new(task).serializable_hash.to_json, status: :created
     rescue CreateTask::ValidationError => e
       render json: { errors: e.errors }, status: :unprocessable_entity
     end
@@ -16,7 +16,7 @@ class TasksController < ActionController::API
 
   def index
     posts = ListTasks.new(TaskRepository.new).execute
-    render json: posts
+    render json: TaskSerializer.new(posts).serializable_hash.to_json
   end
 
   def destroy
@@ -33,7 +33,8 @@ class TasksController < ActionController::API
     task_repository = TaskRepository.new
     begin
       task = UpdateTask.new(task_repository).execute(params[:id].to_i, task_params)
-      render json: { task:, message: 'Task updated successfully' }, status: :ok
+      render json: TaskSerializer.new(task).serializable_hash.merge(message: 'Task updated successfully'),
+             status: :ok
     rescue ActiveRecord::RecordNotFound
       render json: { error: 'No task found' }, status: :not_found
     rescue UpdateTask::ValidationError => e
@@ -42,7 +43,6 @@ class TasksController < ActionController::API
     #   render json: { errors: [e.message] }, status: :unprocessable_entity
     rescue StandardError => e
       Rails.logger.error("Failed to update task: #{e.message}")
-
       render json: { error: 'Failed to update task' }, status: :internal_server_error
     end
   end
