@@ -11,7 +11,7 @@ class TaskRepository
   end
 
   def find(id)
-    Task.find_by(id:)
+    Task.find(id)
   end
 
   def update(id, task_params)
@@ -22,7 +22,7 @@ class TaskRepository
 
   def destroy(id)
     task = find(id)
-    task&.destroy
+    task&.destroy!
     task
   end
 end
