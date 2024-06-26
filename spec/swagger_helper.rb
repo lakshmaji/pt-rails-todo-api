@@ -22,7 +22,158 @@ RSpec.configure do |config|
         version: 'v1',
         description: 'This is the first version of todo API'
       },
-      paths: {},
+      paths: {
+        '/oauth/token' => {
+          post: {
+            tags: ['Authentication'],
+            summary: 'Obtain OAuth2 token',
+            description: 'Obtain an OAuth2 token using Doorkeeper',
+            requestBody: {
+              required: true,
+              content: {
+                'application/x-www-form-urlencoded' => {
+                  schema: {
+                    type: :object,
+                    properties: {
+                      grant_type: { type: :string, example: 'password',
+                                    description: 'Grant type (e.g., password, client_credentials, refresh_token, authorization_code)' },
+                      client_id: { type: :string, description: 'Client ID' },
+                      client_secret: { type: :string, description: 'Client Secret' },
+                      email: { type: :string, description: 'Email (required for password grant type)' },
+                      password: { type: :string, description: 'Password (required for password grant type)' },
+                      refresh_token: { type: :string,
+                                       description: 'Refresh token (required for refresh_token grant type)' },
+                      code: { type: :string,
+                              description: 'Authorization code (required for authorization_code grant type)' },
+                      redirect_uri: { type: :string,
+                                      description: 'Redirect URI (required for authorization_code grant type)' }
+                    },
+                    required: ['grant_type']
+                  }
+                },
+                'application/json' => {
+                  schema: {
+                    type: :object,
+                    properties: {
+                      grant_type: { type: :string, example: 'password',
+                                    description: 'Grant type (e.g., password, client_credentials, refresh_token, authorization_code)' },
+                      client_id: { type: :string, description: 'Client ID' },
+                      client_secret: { type: :string, description: 'Client Secret' },
+                      username: { type: :string, description: 'Username (required for password grant type)' },
+                      password: { type: :string, description: 'Password (required for password grant type)' },
+                      refresh_token: { type: :string,
+                                       description: 'Refresh token (required for refresh_token grant type)' },
+                      code: { type: :string,
+                              description: 'Authorization code (required for authorization_code grant type)' },
+                      redirect_uri: { type: :string,
+                                      description: 'Redirect URI (required for authorization_code grant type)' }
+                    },
+                    required: ['grant_type']
+                  }
+                }
+              }
+            },
+            responses: {
+              '200': {
+                description: 'OAuth2 token response',
+                content: {
+                  'application/json' => {
+                    schema: {
+                      type: :object,
+                      properties: {
+                        access_token: { type: :string, description: 'Access token' },
+                        token_type: { type: :string, description: 'Token type' },
+                        expires_in: { type: :integer, description: 'Expiration time in seconds' },
+                        refresh_token: { type: :string, description: 'Refresh token' },
+                        scope: { type: :string, description: 'Scope of the access token' },
+                        created_at: { type: :integer, description: 'Token creation timestamp' }
+                      }
+                    }
+                  }
+                }
+              },
+              '400': {
+                description: 'Invalid request',
+                content: {
+                  'application/json' => {
+                    schema: {
+                      type: :object,
+                      properties: {
+                        error: { type: :string, description: 'Error message' },
+                        error_description: { type: :string, description: 'Error description' }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        '/oauth/revoke' => {
+          post: {
+            tags: ['Authentication'],
+            summary: 'Revoke OAuth2 token',
+            description: 'Revoke an OAuth2 token using Doorkeeper',
+            requestBody: {
+              required: true,
+              content: {
+                'application/x-www-form-urlencoded' => {
+                  schema: {
+                    type: :object,
+                    properties: {
+                      token: { type: :string, description: 'The token to be revoked' },
+                      client_id: { type: :string, description: 'Client ID' },
+                      client_secret: { type: :string, description: 'Client Secret' }
+                    },
+                    required: %w[token client_id client_secret]
+                  }
+                },
+                'application/json' => {
+                  schema: {
+                    type: :object,
+                    properties: {
+                      token: { type: :string, description: 'The token to be revoked' },
+                      client_id: { type: :string, description: 'Client ID' },
+                      client_secret: { type: :string, description: 'Client Secret' }
+                    },
+                    required: %w[token client_id client_secret]
+                  }
+                }
+              }
+            },
+            responses: {
+              '200': {
+                description: 'Token revoked successfully',
+                content: {
+                  'application/json' => {
+                    schema: {
+                      type: :object,
+                      properties: {
+                        message: { type: :string, example: 'Token revoked successfully' }
+                      }
+                    }
+                  }
+                }
+              },
+              '400': {
+                description: 'Invalid request',
+                content: {
+                  'application/json' => {
+                    schema: {
+                      type: :object,
+                      properties: {
+                        error: { type: :string, description: 'Error message' },
+                        error_description: { type: :string, description: 'Error description' }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       servers: [
         {
           url: '{protocol}://{defaultHost}',
