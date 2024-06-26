@@ -1,9 +1,10 @@
 name: Build app
 
-on: push
+on: pull_request
+
 concurrency:
   group: ci_pipeline
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   test-build-project:
