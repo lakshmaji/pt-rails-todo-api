@@ -11,6 +11,11 @@ Bundler.require(*Rails.groups)
 module Todo
   # Application
   class Application < Rails::Application
+    config.autoload_paths << "#{root}/app/adapters/controllers"
+    config.autoload_paths << "#{root}/app/adapters/repositories"
+    config.autoload_paths << "#{root}/app/core/entities"
+    config.autoload_paths << "#{root}/app/core/use_cases/tasks"
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
