@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'swagger_helper'
-RSpec.describe 'auth', type: :request do
+RSpec.describe 'auth', type: :request do # rubocop:disable RSpec/EmptyExampleGroup
   path '/v1/auth/signup' do
     post 'Register a user' do
       tags 'Authentication'
@@ -31,6 +31,7 @@ RSpec.describe 'auth', type: :request do
                 required: true
 
       let!(:token) { token_scopes('public manage') }
+
       request_body_example value: {
         user: {
           email: 'user@example.com',
@@ -63,6 +64,7 @@ RSpec.describe 'auth', type: :request do
 
       response '422', 'invalid request' do
         let(:register_params) { { user: { email: 'user@example.com' }, client_id: 'webapp_id' } }
+
         request_body_example value: {
           user: {
             email: 'user@example.com'

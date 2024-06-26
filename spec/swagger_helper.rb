@@ -35,8 +35,10 @@ RSpec.configure do |config|
                   schema: {
                     type: :object,
                     properties: {
-                      grant_type: { type: :string, example: 'password',
-                                    description: 'Grant type (e.g., password, client_credentials, refresh_token, authorization_code)' },
+                      grant_type: { type: :string,
+                                    example: 'password',
+                                    description: "Grant type \
+                                    (e.g., password, client_credentials, refresh_token, authorization_code)" },
                       client_id: { type: :string, description: 'Client ID' },
                       client_secret: { type: :string, description: 'Client Secret' },
                       email: { type: :string, description: 'Email (required for password grant type)' },
@@ -56,7 +58,8 @@ RSpec.configure do |config|
                     type: :object,
                     properties: {
                       grant_type: { type: :string, example: 'password',
-                                    description: 'Grant type (e.g., password, client_credentials, refresh_token, authorization_code)' },
+                                    description: "Grant type \
+                                    (e.g., password, client_credentials, refresh_token, authorization_code)" },
                       client_id: { type: :string, description: 'Client ID' },
                       client_secret: { type: :string, description: 'Client Secret' },
                       username: { type: :string, description: 'Username (required for password grant type)' },
