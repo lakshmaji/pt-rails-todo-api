@@ -12,7 +12,7 @@ RSpec.describe ListTasks do
       tasks = create_list(:task, 5)
       result = list_tasks.execute(page: 1, per_page: 3)
 
-      expect(result[:tasks]).to match_array(tasks.first(3))
+      expect(result[:tasks]).to match_array(tasks.sort { |a,b| b.created_at <=> a.created_at }.first(3))
       expect(result[:total_count]).to eq(5)
     end
 
