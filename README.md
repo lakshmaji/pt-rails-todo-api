@@ -101,6 +101,19 @@ bundle exec rspec
 make specs
 ```
 
+## Environment variables
+
+You can either pass env variables or use rails credentials. The env variables takes highest precedence.
+   
+```bash
+    db:
+        port: 3308
+        host: 127.0.0.1
+        user: root
+        password: example
+    allowed_cors_origins: localhost:3000
+```
+
 ## First Steps
 
 1. To consume APIs, you must sign up for an account. You can either do it from Swagger or use the below curl request
@@ -130,6 +143,7 @@ make specs
     ```
 
 3. Copy the **access_token** from the response and pass it in `Authorization` headers for subsequent requests made on `tasks` resource.
+4. When running the front end application make sure to configure allowed origins `ALLOWED_CORS_ORIGINS`.
 
 ### Directory structure
 

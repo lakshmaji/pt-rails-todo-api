@@ -19,6 +19,7 @@
         host: 127.0.0.1
         user: root
         password: example
+      allowed_cors_origins: localhost:3000
    ```
 4. rbenv 1.2.0
    
