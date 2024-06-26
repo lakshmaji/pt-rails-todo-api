@@ -38,6 +38,8 @@ class TasksController < ActionController::API
       render json: { error: 'No task found' }, status: :not_found
     rescue UpdateTask::ValidationError => e
       render json: { errors: e.errors }, status: :unprocessable_entity
+    # rescue ArgumentError => e
+    #   render json: { errors: [e.message] }, status: :unprocessable_entity
     rescue StandardError => e
       Rails.logger.error("Failed to update task: #{e.message}")
 

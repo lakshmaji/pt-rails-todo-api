@@ -3,5 +3,8 @@
 # Task model
 class Task < ApplicationRecord
   validates :title, presence: true
+
+  enum status: { todo: 0, in_progress: 1, completed: 2 }, _suffix: true
+
   belongs_to :user
 end

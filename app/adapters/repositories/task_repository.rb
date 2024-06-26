@@ -15,14 +15,10 @@ class TaskRepository
   end
 
   def update(id, task_params)
-    task = find(id)
-    task&.update(task_params)
-    task
+    Task.update(id, task_params)
   end
 
   def destroy(id)
-    task = find(id)
-    task&.destroy!
-    task
+    Task.destroy(id)
   end
 end
