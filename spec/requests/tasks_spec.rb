@@ -51,5 +51,63 @@ RSpec.describe 'Tasks', type: :request do
         end
       end
     end
+
+    get 'Get tasks' do
+      tags 'Tasks'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearer_auth: []]
+
+      response '200', 'list tasks' do
+        let(:token) { token_scopes('public manage') }
+
+        let(:Authorization) { "Bearer #{token.token}" }
+        before do
+          create_list(:task, 5)
+        end
+
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   title: { type: :string },
+                   description: { type: :string },
+                   user_id: { type: :integer },
+                   created_at: { type: :string, format: :datetime },
+                   updated_at: { type: :string, format: :datetime },
+                   status: { type: :integer }
+                 }
+               }
+
+        run_test! do
+          expect(JSON.parse(response.body).size).to eq(5)
+        end
+      end
+
+      response '200', 'zero records' do
+        let(:token) { token_scopes('public manage') }
+        let(:Authorization) { "Bearer #{token.token}" }
+
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   title: { type: :string },
+                   description: { type: :string },
+                   user_id: { type: :integer },
+                   created_at: { type: :string, format: :datetime },
+                   updated_at: { type: :string, format: :datetime },
+                   status: { type: :integer }
+                 }
+               }
+
+        let(:posts) { create_list(:task, 5) }
+        run_test! do
+          expect(JSON.parse(response.body).size).to eq(0)
+        end
+      end
+    end
   end
 end
