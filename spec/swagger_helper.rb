@@ -19,7 +19,8 @@ RSpec.configure do |config|
       openapi: '3.0.1',
       info: {
         title: 'API V1',
-        version: 'v1'
+        version: 'v1',
+        description: 'This is the first version of todo API'
       },
       paths: {},
       servers: [
