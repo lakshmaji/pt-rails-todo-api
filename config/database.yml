@@ -13,11 +13,11 @@ default: &default
   adapter: mysql2
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= Rails.application.credentials.dig(:db, :user) || "root" %>
-  password: <%= Rails.application.credentials.dig(:db, :password) || "password" %>
+  username: <%= ENV.fetch("DB_USER") { Rails.application.credentials.dig(:db, :user) || "root" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { Rails.application.credentials.dig(:db, :password) || "password" } %>
   socket: /tmp/mysql.sock
-  port: <%= Rails.application.credentials.dig(:db, :port) || 3306 %>
-  host: <%= Rails.application.credentials.dig(:db, :host) || "localhost" %>
+  port: <%= ENV.fetch("DB_PORT") { Rails.application.credentials.dig(:db, :port) || 3306 } %>
+  host: <%= ENV.fetch("DB_HOST") { Rails.application.credentials.dig(:db, :host) || "localhost"} %>
 
 development:
   <<: *default

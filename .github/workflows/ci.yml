@@ -1,0 +1,46 @@
+name: Build app
+
+on: push
+concurrency:
+  group: ci_pipeline
+  cancel-in-progress: false
+
+jobs:
+  test-build-project:
+    name: Todo tasks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # This is used to run github actions locally.
+      # This installation step is required when using act
+      # - name: Set up Docker Compose
+      #   run: |
+      #     curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      #     chmod +x /usr/local/bin/docker-compose
+      #     docker-compose version
+      #     docker compose version
+
+      - name: Spin up server
+        run: |
+          docker-compose -f "docker-compose.yml" up --build -d
+          echo "Waiting 60 seconds for app container to initialize..."
+          sleep 60
+
+      - name: Setup test database
+        run: |
+          docker-compose exec -T -e RAILS_ENV=test api bin/rails db:drop
+          docker-compose exec -T -e RAILS_ENV=test api bin/rails db:create
+          docker-compose exec -T -e RAILS_ENV=test api bin/rails db:migrate
+
+      - name: Run tests
+        run: docker-compose exec -T api bundle exec rspec
+
+      - name: Generate docs
+        run: docker-compose exec -T api make docs
+
+      - name: Stop server
+        run: |
+          docker-compose exec -T -e RAILS_ENV=test api bin/rails db:drop
+          docker-compose down

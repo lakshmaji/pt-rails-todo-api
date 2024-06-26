@@ -22,3 +22,5 @@ Metrics/MethodLength:
 RSpec/VariableName:
   IgnoredPatterns:
     - 'Authorization'
+RSpec/MultipleExpectations:
+  Max: 2
