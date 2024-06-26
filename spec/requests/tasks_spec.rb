@@ -85,6 +85,8 @@ RSpec.describe 'Tasks API', type: :request do
       consumes 'application/json'
       produces 'application/json'
       security [bearer_auth: []]
+      parameter name: :page, in: :query, type: :integer, required: false, description: 'Page number'
+      parameter name: :per_page, in: :query, type: :integer, required: false, description: 'Tasks per page'
 
       response '200', 'list tasks' do
         let(:token) { token_scopes('public manage') }
@@ -102,9 +104,8 @@ RSpec.describe 'Tasks API', type: :request do
                      type: :object,
                      properties: {
                        id: { type: :string },
-                       type: { type: 'task' },
+                       type: { type: :string },
                        attributes: {
-                         id: { type: :integer },
                          title: { type: :string },
                          description: { type: :string },
                          user_id: { type: :integer },
@@ -114,18 +115,127 @@ RSpec.describe 'Tasks API', type: :request do
                        }
                      }
                    }
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     total_count: { type: :integer },
+                     current_page: { type: :integer },
+                     total_pages: { type: :integer },
+                     next_page: { type: :integer, nullable: true },
+                     prev_page: { type: :integer, nullable: true },
+                     per_page: { type: :integer }
+                   }
                  }
                }
+
         example 'application/json', :task_records, {
-          "data": [
-            { 'id' => '753', 'type' => 'task', 'attributes' => {
-              'id' => 753, 'title' => 'Task 1', 'description' => 'Task description', 'status' => 'todo',
-              'created_at' => '2024-06-24T16:41:28.268Z', 'updated_at' => '2024-06-24T16:41:28.268Z'
-            } }
-          ]
+          data: [
+            {
+              id: '1',
+              type: 'task',
+              attributes: {
+                title: 'Task 1',
+                description: 'Task description 1',
+                user_id: 1,
+                created_at: '2024-06-24T16:41:28.268Z',
+                updated_at: '2024-06-24T16:41:28.268Z',
+                status: 'todo'
+              }
+            }
+          ],
+          meta: {
+            total_count: 5,
+            current_page: 1,
+            total_pages: 1,
+            next_page: nil,
+            prev_page: nil,
+            per_page: 10
+          }
         }, 'Records'
+
         run_test! do
-          expect(JSON.parse(response.body)['data'].size).to eq(5)
+          response_data = JSON.parse(response.body)
+          expect(response_data['data'].size).to eq(5)
+          expect(response_data['meta']['total_count']).to eq(5)
+          expect(response_data['meta']['current_page']).to eq(1)
+          expect(response_data['meta']['total_pages']).to eq(1)
+          expect(response_data['meta']['per_page']).to eq(10)
+        end
+      end
+
+      response '200', 'Filter tasks list' do
+        let(:token) { token_scopes('public manage') }
+        let(:Authorization) { "Bearer #{token.token}" }
+
+        before do
+          create_list(:task, 5, status: :todo)
+        end
+
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :string },
+                       type: { type: :string },
+                       attributes: {
+                         type: :object,
+                         properties: {
+                           title: { type: :string },
+                           description: { type: :string },
+                           created_at: { type: :string, format: 'date-time' },
+                           updated_at: { type: :string, format: 'date-time' },
+                           status: { type: :string }
+                         },
+                         required: %w[title description created_at updated_at status]
+                       }
+                     }
+                   }
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     total_count: { type: :integer },
+                     current_page: { type: :integer },
+                     total_pages: { type: :integer },
+                     next_page: { type: :integer, nullable: true },
+                     prev_page: { type: :integer, nullable: true },
+                     per_page: { type: :integer }
+                   }
+                 }
+               }
+
+        example 'application/json', :filtered_task_records, {
+          data: [
+            {
+              id: '1',
+              type: 'task',
+              attributes: {
+                title: 'Task 1',
+                description: 'Task description 1',
+                user_id: 1,
+                created_at: '2024-06-24T16:41:28.268Z',
+                updated_at: '2024-06-24T16:41:28.268Z',
+                status: 'todo'
+              }
+            }
+          ],
+          meta: {
+            total_count: 5,
+            current_page: 1,
+            total_pages: 1,
+            next_page: nil,
+            prev_page: nil,
+            per_page: 10
+          }
+        }, 'Filtered records'
+        run_test! do
+          response_data = JSON.parse(response.body)
+          expect(response_data['meta']['total_count']).to eq(5)
+          expect(response_data['meta']['total_pages']).to eq(1)
         end
       end
 

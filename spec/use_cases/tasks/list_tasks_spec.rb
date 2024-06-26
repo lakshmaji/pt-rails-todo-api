@@ -8,16 +8,37 @@ RSpec.describe ListTasks do
   let(:repository) { TaskRepository.new }
 
   describe '#execute' do
-    it 'returns tasks from the repository' do
-      tasks = create_list(:task, 3)
+    it 'returns paginated tasks from the repository' do
+      tasks = create_list(:task, 5)
+      result = list_tasks.execute(page: 1, per_page: 3)
 
-      expect(list_tasks.execute).to match_array(tasks)
+      expect(result[:tasks]).to match_array(tasks.first(3))
+      expect(result[:total_count]).to eq(5)
     end
 
-    it 'returns all tasks from the repository' do
-      create_list(:task, 3)
+    it 'returns the correct number of tasks per page' do
+      create_list(:task, 5)
+      result = list_tasks.execute(page: 1, per_page: 4)
 
-      expect(list_tasks.execute.size).to eq(3)
+      expect(result[:tasks].size).to eq(4)
+      expect(result[:total_count]).to eq(5)
     end
+
+    it 'returns filtered tasks by status' do
+      create_tasks_with_statuses(completed: 6, todo: 3, in_progress: 5)
+      completed_tasks = Task.where(status: :completed)
+      result = list_tasks.execute(page: 1, per_page: 10, status: :completed)
+
+      expect(result[:tasks]).to match_array(completed_tasks)
+      expect(result[:total_count]).to eq(6)
+    end
+  end
+end
+
+private
+
+def create_tasks_with_statuses(statuses)
+  statuses.each do |status, count|
+    create_list(:task, count, status:)
   end
 end

@@ -6,8 +6,10 @@ class TaskRepository
     Task.create(task_params)
   end
 
-  def all
-    Task.all
+  def all(status: nil)
+    tasks = Task.all
+    tasks = tasks.where(status:) if status.present?
+    tasks
   end
 
   def find(id)
