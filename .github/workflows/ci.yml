@@ -47,6 +47,9 @@ jobs:
       - name: Generate docs
         run: docker-compose exec -T api make docs
 
+      - name: Run lint
+        run: docker-compose exec -T api bundle exec rubocop
+
       - name: Stop server
         run: |
           docker-compose exec -T -e RAILS_ENV=test api bin/rails db:drop

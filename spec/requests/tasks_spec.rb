@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'swagger_helper'
-RSpec.describe 'Tasks API', type: :request do
+RSpec.describe 'Tasks API', type: :request do # rubocop:disable RSpec/MultipleMemoizedHelpers
   path '/v1/tasks' do
     post 'Create a task' do
       tags 'Tasks'
@@ -69,6 +69,7 @@ RSpec.describe 'Tasks API', type: :request do
 
       response '422', 'invalid request' do
         let(:register_params) { { description: 'without title' } }
+
         request_body_example value: {
           description: 'without title'
         }, name: 2, summary: 'Invalid input 422'
@@ -87,14 +88,13 @@ RSpec.describe 'Tasks API', type: :request do
       security [bearer_auth: []]
       parameter name: :page, in: :query, type: :integer, required: false, description: 'Page number'
       parameter name: :per_page, in: :query, type: :integer, required: false, description: 'Tasks per page'
+      parameter name: :status, in: :query, type: :string, required: false, description: 'Tasks status'
 
       response '200', 'list tasks' do
         let(:token) { token_scopes('public manage') }
 
         let(:Authorization) { "Bearer #{token.token}" }
-        before do
-          create_list(:task, 5)
-        end
+        let!(:todos_list) { create_list(:task, 5) }
 
         schema type: :object,
                properties: {
@@ -156,8 +156,8 @@ RSpec.describe 'Tasks API', type: :request do
 
         run_test! do
           response_data = JSON.parse(response.body)
-          expect(response_data['data'].size).to eq(5)
-          expect(response_data['meta']['total_count']).to eq(5)
+          expect(response_data['data'].size).to eq(todos_list.count)
+          expect(response_data['meta']['total_count']).to eq(todos_list.size)
           expect(response_data['meta']['current_page']).to eq(1)
           expect(response_data['meta']['total_pages']).to eq(1)
           expect(response_data['meta']['per_page']).to eq(10)
@@ -168,9 +168,12 @@ RSpec.describe 'Tasks API', type: :request do
         let(:token) { token_scopes('public manage') }
         let(:Authorization) { "Bearer #{token.token}" }
 
-        before do
+        let!(:todos_list) do
           create_list(:task, 5, status: :todo)
+          create_list(:task, 3, status: :completed)
+          create_list(:task, 2, status: :in_progress)
         end
+        let(:status) { :todo }
 
         schema type: :object,
                properties: {
@@ -244,6 +247,7 @@ RSpec.describe 'Tasks API', type: :request do
         let(:Authorization) { "Bearer #{token.token}" }
 
         let(:tasks) { create_list(:task, 5) }
+
         example 'application/json', :no_tasks, {
           data: []
         }, 'Empty'
@@ -253,6 +257,7 @@ RSpec.describe 'Tasks API', type: :request do
       end
     end
   end
+
   path '/v1/tasks/{id}' do
     delete 'Delete task' do
       tags 'Tasks'
@@ -287,8 +292,7 @@ RSpec.describe 'Tasks API', type: :request do
         end
       end
     end
-  end
-  path '/v1/tasks/{id}' do
+
     put 'Update task' do
       tags 'Tasks'
       consumes 'application/json'
@@ -321,6 +325,7 @@ RSpec.describe 'Tasks API', type: :request do
             description: 'Updated description'
           }
         end
+
         request_body_example value: {
           title: 'New title',
           description: 'New description'
@@ -372,6 +377,7 @@ RSpec.describe 'Tasks API', type: :request do
             status: :in_progress
           }
         end
+
         request_body_example value: {
           status: :in_progress,
           title: 'Title'
@@ -427,11 +433,12 @@ RSpec.describe 'Tasks API', type: :request do
           {}
         end
 
+        # NOTE: this was intentionally left to demonstrate 5XX.
         request_body_example value: {}, name: 'task_no_data', summary: 'Update task with no info'
 
         run_test! do
           expect(response).to have_http_status(:internal_server_error)
-          expect(response.body).to match(/Failed to update task/i)
+          expect(response.body).to match(/Something went wrong at our end/i)
         end
       end
     end

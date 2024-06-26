@@ -23,11 +23,11 @@ make docker_dev
 Preparing database with sample application data.
 
 ```bash
-docker exec -it <app container id> bin/rails db:prepare
+docker-compose exec -T <app service> bin/rails db:prepare
 # example
-docker exec -it task_api bin/rails db:prepare
-docker exec -it task_api bin/rails db:migrate
-docker exec -it task_api bin/rails db:seed
+docker-compose exec -T api bin/rails db:prepare
+docker-compose exec -T api bin/rails db:migrate
+docker-compose exec -T api bin/rails db:seed
 ```
 
 ### Manual 
@@ -72,7 +72,7 @@ make serve
 
 The API endpoint information (Swagger OpenAPI spec) can be access at `http://localhost:3000/api-docs`. To generate API docs run
 
-![API docs](./API.png)
+![API docs](./.github/API.png)
 
 ```bash
 bin/rails rswag:specs:swaggerize 
@@ -195,6 +195,7 @@ Currently the CI pipeline actions are being run using docker. But they should be
 4. The test cases are covered for `use cases` and `requests`.
 5. The swagger spec is not commited to source code. The idea is to auto generate it using github actions.
 6. Introducing `elasticsearch` and `redis` is an overkill for the current application requirements. Hence not implemented.
+7. Logging was not implement due to time constraint
 
 
 #### Notes:

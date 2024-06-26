@@ -2,6 +2,8 @@
 
 # Tasks controller
 class TasksController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
   before_action :doorkeeper_authorize!
 
   def initialize(*args)
@@ -33,12 +35,8 @@ class TasksController < ApplicationController
 
   def destroy
     task_repository = @task_repository
-    begin
-      DeleteTask.new(task_repository).execute(params[:id].to_i)
-      render json: { message: 'Task deleted successfully' }, status: :no_content
-    rescue ActiveRecord::RecordNotFound
-      render json: { error: 'No task found' }, status: :not_found
-    end
+    DeleteTask.new(task_repository).execute(params[:id].to_i)
+    render json: { message: 'Task deleted successfully' }, status: :no_content
   end
 
   def update
@@ -47,13 +45,8 @@ class TasksController < ApplicationController
       task = UpdateTask.new(task_repository).execute(params[:id].to_i, task_params)
       render json: TaskSerializer.new(task).serializable_hash.merge(message: 'Task updated successfully'),
              status: :ok
-    rescue ActiveRecord::RecordNotFound
-      render json: { error: 'No task found' }, status: :not_found
     rescue UpdateTask::ValidationError => e
       render json: { errors: e.errors }, status: :unprocessable_entity
-    rescue StandardError => e
-      Rails.logger.error("Failed to update task: #{e.message}")
-      render json: { error: 'Failed to update task' }, status: :internal_server_error
     end
   end
 
@@ -61,5 +54,9 @@ class TasksController < ApplicationController
 
   def task_params
     params.require(:task).permit(:title, :description, :status)
+  end
+
+  def record_not_found
+    render json: { error: 'No task found' }, status: :not_found
   end
 end
