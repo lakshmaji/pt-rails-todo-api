@@ -64,3 +64,5 @@ gem "rswag", "~> 2.13"
 gem "devise", "~> 4.9"
 
 gem "doorkeeper", "~> 5.7"
+
+gem "jsonapi-serializer", "~> 2.2"

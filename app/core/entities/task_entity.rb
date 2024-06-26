@@ -17,6 +17,19 @@ class TaskEntity
     raise NotImplementedError, 'Cannot save TaskEntity directly'
   end
 
+  def self.human_readable_status(status)
+    case status
+    when 'todo'
+      'todo'
+    when 'in_progress'
+      'in progress'
+    when 'completed'
+      'Done'
+    else
+      status
+    end
+  end
+
   private
 
   def validate_status
