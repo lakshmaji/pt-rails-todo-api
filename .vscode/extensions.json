@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "ms-vscode-remote.remote-containers",
+    "ms-azuretools.vscode-docker",
+    "mikestead.dotenv",
+    "github.vscode-github-actions",
+    "ms-vscode.makefile-tools",
+    "shopify.ruby-lsp",
+    "castwide.solargraph",
+    "mtxr.sqltools-driver-mysql",
+    "mtxr.sqltools",
+    "koichisasada.vscode-rdbg"
+  ]
+}

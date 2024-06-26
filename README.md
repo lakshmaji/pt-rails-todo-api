@@ -1,5 +1,16 @@
 # TODO API
 
+[![Build app](https://github.com/lakshmaji/pt-rails-todo-api/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lakshmaji/pt-rails-todo-api/actions/workflows/ci.yml)
+
+## Features
+
+1. Create todo item
+1. Update todo status to todo or in progress or completed
+2. Dleete todo item
+3. List todo items (filters, pagination)
+4. User signup and login
+5. Application authorization
+
 ## Requirements
 
 - ruby 3.2.2
@@ -196,27 +207,3 @@ Currently the CI pipeline actions are being run using docker. But they should be
 5. The swagger spec is not commited to source code. The idea is to auto generate it using github actions.
 6. Introducing `elasticsearch` and `redis` is an overkill for the current application requirements. Hence not implemented.
 7. Logging was not implement due to time constraint
-
-
-#### Notes:
-
-1. validate docker files
-
-   ```bash
-   docker compose config
-   ```
-
-2. Run pipeline locally
-
-   ```bash
-   act push --platform ubuntu-latest=catthehacker/ubuntu:act-latest --container-architecture linux/amd64
-   ```   
-3. Sample credentails
-   
-   ```bash
-     db:
-        port: 3308
-        host: 127.0.0.1
-        user: root
-        password: example
-   ```
