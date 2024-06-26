@@ -75,7 +75,6 @@ Before proceeding further, make sure MySQL is installed. or you can use ./docker
 ```bash
 bundle install
 make setup_db
-make database
 make serve
 ```
 
