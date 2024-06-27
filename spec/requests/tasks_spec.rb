@@ -94,7 +94,7 @@ RSpec.describe 'Tasks API', type: :request do # rubocop:disable RSpec/MultipleMe
         let(:token) { token_scopes('public manage') }
 
         let(:Authorization) { "Bearer #{token.token}" }
-        let!(:todos_list) { create_list(:task, 5) }
+        let!(:todos_list) { create_list(:task, 5, user_id: token.resource_owner_id) }
 
         schema type: :object,
                properties: {
@@ -169,9 +169,9 @@ RSpec.describe 'Tasks API', type: :request do # rubocop:disable RSpec/MultipleMe
         let(:Authorization) { "Bearer #{token.token}" }
 
         let!(:todos_list) do
-          create_list(:task, 5, status: :todo)
-          create_list(:task, 3, status: :completed)
-          create_list(:task, 2, status: :in_progress)
+          create_list(:task, 5, status: :todo, user_id: token.resource_owner_id)
+          create_list(:task, 3, status: :completed, user_id: token.resource_owner_id)
+          create_list(:task, 2, status: :in_progress, user_id: token.resource_owner_id)
         end
         let(:status) { :todo }
 
@@ -253,6 +253,82 @@ RSpec.describe 'Tasks API', type: :request do # rubocop:disable RSpec/MultipleMe
         }, 'Empty'
         run_test! do
           expect(JSON.parse(response.body)['data'].size).to eq(0)
+        end
+      end
+
+      response '200', 'shouldnt include other user tasks' do
+        let(:token) { token_scopes('public manage') }
+
+        let(:Authorization) { "Bearer #{token.token}" }
+        let!(:todos_list) do
+          create_list(:task, 3, user_id: token.resource_owner_id)
+          user = create(:user, id: 123_456_789)
+          create_list(:task, 25, user_id: user.id)
+        end
+
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :string },
+                       type: { type: :string },
+                       attributes: {
+                         title: { type: :string },
+                         description: { type: :string },
+                         user_id: { type: :integer },
+                         created_at: { type: :string, format: :datetime },
+                         updated_at: { type: :string, format: :datetime },
+                         status: { type: :string }
+                       }
+                     }
+                   }
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     total_count: { type: :integer },
+                     current_page: { type: :integer },
+                     total_pages: { type: :integer },
+                     next_page: { type: :integer, nullable: true },
+                     prev_page: { type: :integer, nullable: true },
+                     per_page: { type: :integer }
+                   }
+                 }
+               }
+
+        example 'application/json', :task_records, {
+          data: [
+            {
+              id: '1',
+              type: 'task',
+              attributes: {
+                title: 'Task 1',
+                description: 'Task description 1',
+                user_id: 1,
+                created_at: '2024-06-24T16:41:28.268Z',
+                updated_at: '2024-06-24T16:41:28.268Z',
+                status: 'todo'
+              }
+            }
+          ],
+          meta: {
+            total_count: 5,
+            current_page: 1,
+            total_pages: 1,
+            next_page: nil,
+            prev_page: nil,
+            per_page: 10
+          }
+        }, 'Records'
+
+        run_test! do
+          response_data = JSON.parse(response.body)
+          expect(response_data['data'].size).to eq(3)
+          expect(response_data['meta']['total_count']).to eq(3)
+          expect(Task.count).to eq(28)
         end
       end
     end

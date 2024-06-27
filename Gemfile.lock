@@ -86,7 +86,7 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.5.1)
-    doorkeeper (5.7.0)
+    doorkeeper (5.7.1)
       railties (>= 5)
     erubi (1.13.0)
     factory_bot (6.4.6)
@@ -202,7 +202,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.3.0)
+    rexml (3.3.1)
       strscan
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
