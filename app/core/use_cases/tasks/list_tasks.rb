@@ -6,9 +6,9 @@ class ListTasks
     @repository = repository
   end
 
-  def execute(page:, per_page:, status: nil)
-    tasks = @repository.all(status:).page(page).per(per_page)
-    total_count = @repository.all(status:).count
+  def execute(user_id:, page:, per_page:, status: nil)
+    tasks = @repository.by_user(user_id:, status:).page(page).per(per_page)
+    total_count = @repository.by_user(user_id:, status:).count
     { tasks:, total_count: }
   end
 end

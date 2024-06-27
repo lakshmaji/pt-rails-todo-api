@@ -7,6 +7,7 @@ class DeleteTask
   end
 
   def execute(id)
-    @repository.destroy(id)
+    task = @repository.find(id)
+    @repository.destroy(task.id)
   end
 end

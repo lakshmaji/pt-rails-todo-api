@@ -12,6 +12,13 @@ class TaskRepository
     tasks
   end
 
+  def by_user(user_id:, status: nil)
+    tasks = Task.all
+    tasks = tasks.where(user_id:)
+    tasks = tasks.where(status:) if status.present?
+    tasks
+  end
+
   def find(id)
     Task.find(id)
   end

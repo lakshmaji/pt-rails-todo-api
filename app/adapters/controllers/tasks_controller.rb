@@ -26,11 +26,10 @@ class TasksController < ApplicationController
     per_page = params[:per_page] || 10
     status = params[:status]
 
-    result = ListTasks.new(@task_repository).execute(page:, per_page:, status:)
-    tasks = result[:tasks]
-    total_count = result[:total_count]
+    result = ListTasks.new(@task_repository).execute(page:, per_page:, status:,
+                                                     user_id: doorkeeper_token.resource_owner_id)
 
-    render json: PaginationSerializer.new(tasks, total_count:).serializable_hash.to_json
+    render json: PaginationSerializer.new(result[:tasks], total_count: result[:total_count]).serializable_hash.to_json
   end
 
   def destroy
