@@ -1,25 +1,32 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "type": "rdbg",
-        "name": "spec - current file",
-        "request": "launch",
-        "useBundler": true,
-        "command": "rspec",
-        "script": "${file}",
-        "args": [],
-        "askParameters": false,
-        "waitLaunchTime": 500
-      },
-      {
-        "type": "rdbg",
-        "name": "Attach",
-        "request": "attach"
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "rdbg",
+      "name": "spec - current file",
+      "request": "launch",
+      "useBundler": true,
+      "command": "rspec",
+      "script": "${file}",
+      "args": [],
+      "askParameters": false,
+      "waitLaunchTime": 500,
+      "env": {
+        // There is an issue with encoding `bundler/yaml_serializer.rb:54:in `split': invalid byte sequence in US-ASCII`
+
+        // To fix the above issue supplying the below encoding to environment:
+        // Reference: https://github.com/rubygems/bundler/issues/1570
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8"
       }
-    ]
-  }
-  
+    },
+    {
+      "type": "rdbg",
+      "name": "Attach",
+      "request": "attach"
+    }
+  ]
+}
