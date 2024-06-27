@@ -35,17 +35,31 @@ RSpec.describe ListTasks do
       expect(result[:total_count]).to eq(6)
     end
 
-    it 'returns current user tasks from the repository' do
-      tasks = create_list(:task, 5, user_id: user.id)
-      another_user = create(:user)
-      create_list(:task, 12, user_id: another_user.id)
-      result = list_tasks.execute(user_id: user.id, page: 1, per_page: 3)
+    context 'when tasks are associate to multiple users' do
+      let!(:tasks) { create_list(:task, 5, user_id: user.id) }
+      let!(:another_user) { create(:user) }
 
-      expect(result[:tasks]).to match_array(tasks.sort { |a, b| b.created_at <=> a.created_at }.first(3))
-      expect(result[:total_count]).to eq(5)
-      # Other user tasks wont get included
-      expect(Task.all.count).to eq(17)
-      expect(Task.all.where(user_id: user.id).count).to eq(5)
+      before do
+        create_list(:task, 12, user_id: another_user.id)
+      end
+
+      it 'has all records irrespective of users' do
+        expect(Task.all.count).to eq(17)
+        expect(Task.all.where(user_id: another_user.id).count).to eq(12)
+      end
+
+      it 'returns current user tasks from the repository' do
+        result = list_tasks.execute(user_id: user.id, page: 1, per_page: 3)
+
+        expect(result[:tasks]).to match_array(tasks.sort { |a, b| b.created_at <=> a.created_at }.first(3))
+        expect(result[:total_count]).to eq(5)
+      end
+
+      it 'returns other user tasks from the repository' do
+        result = list_tasks.execute(user_id: another_user.id, page: 1, per_page: 3)
+
+        expect(result[:total_count]).to eq(12)
+      end
     end
   end
 end
