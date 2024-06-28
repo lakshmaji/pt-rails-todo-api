@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Tasks controller
-class TasksController < ApplicationController
+class TasksController < ApiController
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   before_action :doorkeeper_authorize!

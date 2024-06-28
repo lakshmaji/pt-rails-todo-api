@@ -14,3 +14,12 @@ Doorkeeper::Application.find_or_create_by(name: 'Web APP') do |app|
   app.uid = 'webapp_id'
   app.save!
 end
+
+
+Doorkeeper::Application.find_or_create_by(name: 'Mobile App') do |app|
+  app.redirect_uri = 'http://localhost:3000'
+  app.secret = 'mapp_secret'
+  app.uid = 'mapp_id'
+  app.confidential  = false
+  app.save!
+end

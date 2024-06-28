@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # RegsitartionsController
-class AuthController < ApplicationController
+class AuthController < ApiController
   before_action :doorkeeper_authorize!, only: [:current_user]
 
   def signup

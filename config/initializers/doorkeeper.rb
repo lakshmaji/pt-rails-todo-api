@@ -33,6 +33,13 @@ Doorkeeper.configure do
     #     redirect_to sign_in_url
     #   end
     current_user || warden.authenticate!(scope: :user)
+      # current_user = User.find_by(id: session[:current_user_id])
+      if current_user&.admin?
+        current_user
+      else
+        redirect_to new_user_session_path
+      end
+  
   end
 
   # You can use your own model classes if you need to extend (or even override) default
@@ -85,7 +92,9 @@ Doorkeeper.configure do
   # want to use API mode that will skip all the views management and change the way how
   # Doorkeeper responds to a requests.
   #
-  api_only
+  # https://github.com/doorkeeper-gem/doorkeeper/issues/1536
+  # Without setting false, wont be able to allow user to authorize
+  api_only=false
 
   # Enforce token request content type to application/x-www-form-urlencoded.
   # It is not enabled by default to not break prior versions of the gem.

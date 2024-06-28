@@ -10,6 +10,10 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
+  def admin?
+    self.admin
+  end
+
   def self.authenticate!(email, password)
     user = User.find_for_authentication(email:)
     user&.valid_password?(password) ? user : nil
