@@ -1,0 +1,12 @@
+# Ignore node_modules and other React app specific files
+pkce-demo/node_modules
+pkce-demo/npm-debug.log
+pkce-demo/.DS_Store
+
+# Ignore Rails specific files during Docker build
+log/
+tmp/
+*.log
+*.pid
+*.swp
+.DS_Store

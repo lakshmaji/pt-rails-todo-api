@@ -17,7 +17,7 @@ services:
     container_name: task_api
     build:
       context: .
-      dockerfile: docker/api/Dockerfile
+      dockerfile: ./docker/api/Dockerfile
     ports:
       - "3000:3000"
     depends_on:
@@ -28,7 +28,24 @@ services:
       DB_PASSWORD: example
       DB_HOST: db
       DB_PORT: 3306
+      ALLOWED_CORS_ORIGINS: http://localhost:3001
     volumes:
       - .:/app
     tty: true
-    command: bin/rails s -b 0.0.0.0
+    # command: bin/rails s -b 0.0.0.0
+    command: sh -c "bin/rails db:prepare && bin/rails s -b 0.0.0.0"
+
+  ui:
+    container_name: task_app
+    build:
+      context: .
+      dockerfile: ./docker/client/Dockerfile
+    ports:
+      - "3001:3000"
+    tty: true
+    depends_on:
+      - api
+
+volumes:
+  db-data:
+    driver: local
