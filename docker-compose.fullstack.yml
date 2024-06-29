@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  db:
+    container_name: task_db
+    image: mysql:8
+    command: ['--sql_mode=TRADITIONAL', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', '--authentication_policy=mysql_native_password', '--mysql-native-password=ON']
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  api:
+    container_name: task_api
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_USER: root
+      DB_PASSWORD: example
+      DB_HOST: db
+      DB_PORT: 3306
+      ALLOWED_CORS_ORIGINS: http://localhost:3001
+    volumes:
+      - .:/app
+    tty: true
+    command: sh -c "bin/rails db:prepare && bin/rails s -b 0.0.0.0"
+
+  ui:
+    container_name: task_app
+    build:
+      context: .
+      dockerfile: ./docker/client/Dockerfile
+    ports:
+      - "3001:3001"
+    tty: true
+    depends_on:
+      - api
+
+volumes:
+  db-data:
+    driver: local

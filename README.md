@@ -11,6 +11,22 @@
 4. User signup and login
 5. Application authorization
 
+## Client App
+
+Docs here [Client App](./client-app/README.md)
+
+### App screenshots
+
+![list](./.github/assets/list.png)
+![dark theme list](./.github/assets/dark.png)
+![create todo](./.github/assets/add.png)
+![update todo](./.github/assets/edit.png)
+![delete todo](./.github/assets/delete.png)
+![status filters](./.github/assets/filter.png)
+![validation message](./.github/assets/validation.png)
+
+Currently it is developed as SPA. It should SSR along with PKCE, a demo available on `feat/auth-code-pkce` git branch
+
 ## Requirements
 
 - ruby 3.2.2
@@ -215,8 +231,13 @@ Currently the CI pipeline actions are being run using docker. But they should be
 
 1. The authentication token is a random hex value. Currently JWT token implementations are not incorporated into the application, due to the time constraint.
 2. To benefit from rails validations and to avoid re-work on validation helpers, we are using `ActiveModel::Model` in entities, due to the time constraint. Which is not correct in terms of current architecture.
-3. Planning to use `Resource Owner Password Flow` grant type to authorize for resource access.
+3. Using `Resource Owner Password Flow` grant type to authorize requests from client application. Which currently have some secuirty concerns but considering the application scope it really doesnt matter. **PKCE** `was not implemented due to time constraint`. And also maintaining UI consistency across auth server and client application is bit time consuming task.
 4. The test cases are covered for `use cases` and `requests`.
 5. The swagger spec is not commited to source code. The idea is to auto generate it using github actions.
 6. Introducing `elasticsearch` and `redis` is an overkill for the current application requirements. Hence not implemented.
 7. Logging was not implement due to time constraint
+8. Rate limiting was not implemented
+9. Currently passwords are commited in codebase, most of them are for testing purpose. They can read from `.env` later.
+
+
+
