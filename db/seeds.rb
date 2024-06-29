@@ -21,10 +21,9 @@ Doorkeeper::Application.find_or_create_by(name: 'Mobile App') do |app|
   app.redirect_uri = 'http://localhost:3000/callback'
   app.secret = 'mapp_secret'
   app.uid = 'mapp_id'
-  app.confidential  = false
+  app.confidential = false
   app.save!
 end
-
 
 user = User.create(
   {
