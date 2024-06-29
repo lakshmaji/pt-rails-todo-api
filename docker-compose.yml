@@ -32,7 +32,7 @@ services:
     volumes:
       - .:/app
     tty: true
-    command: sh -c "rm /app/tmp/pids/server.pid && bin/rails db:prepare && bin/rails s -b 0.0.0.0"
+    command: sh -c "bin/rails db:prepare && bin/rails s -b 0.0.0.0"
 
 
   ui:
