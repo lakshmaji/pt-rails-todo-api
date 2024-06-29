@@ -158,9 +158,7 @@ const TaskForm: FC<Props> = ({
                           <legend
                             className="text-sm font-medium leading-6 text-gray-900  dark:text-slate-400"
                             id="todo-status"
-                          >
-                            Status banan {current_task_status?.status}
-                          </legend>
+                          ></legend>
                           <div className="mt-2 space-y-4">
                             {TASK_STATUS_OPTIONS.map((tsOption) => {
                               return (
