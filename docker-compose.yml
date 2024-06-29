@@ -28,7 +28,7 @@ services:
       DB_PASSWORD: example
       DB_HOST: db
       DB_PORT: 3306
-      ALLOWED_CORS_ORIGINS: http://localhost:3001
+      ALLOWED_CORS_ORIGINS: localhost:3001
     volumes:
       - .:/app
     tty: true
