@@ -1,6 +1,8 @@
 # TODO API
 
-[![Build app](https://github.com/lakshmaji/pt-rails-todo-api/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lakshmaji/pt-rails-todo-api/actions/workflows/ci.yml)
+[![API](https://github.com/lakshmaji/pt-rails-todo-api/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lakshmaji/pt-rails-todo-api/actions/workflows/ci.yml)
+
+[![UI](https://github.com/lakshmaji/pt-rails-todo-api/actions/workflows/e2e.yml/badge.svg)](https://github.com/lakshmaji/pt-rails-todo-api/actions/workflows/e2e.yml)
 
 ## Features
 
@@ -26,6 +28,14 @@ Docs here [Client App](./client-app/README.md)
 ![validation message](./.github/assets/validation.png)
 
 Currently it is developed as SPA. It should SSR along with PKCE, a demo available on `feat/auth-code-pkce` git branch
+
+### Quick setup
+
+```bash
+docker-compose up
+```
+Access app at http://localhost:3001/
+Access API documentaion at http://localhost:3000/api-docs/index.html
 
 ## Requirements
 
