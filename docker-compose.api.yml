@@ -31,4 +31,4 @@ services:
     volumes:
       - .:/app
     tty: true
-    command: bin/rails s -b 0.0.0.0
+    command: sh -c "bin/rails db:prepare && bin/rails s -b 0.0.0.0"

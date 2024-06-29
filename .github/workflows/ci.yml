@@ -31,15 +31,9 @@ jobs:
 
       - name: Spin up server
         run: |
-          docker-compose -f "docker-compose.yml" up --build -d
+          docker-compose -f "docker-compose.api.yml" up --build -d
           echo "Waiting 60 seconds for app container to initialize..."
           sleep 60
-
-      - name: Setup test database
-        run: |
-          docker-compose exec -T -e RAILS_ENV=test api bin/rails db:drop
-          docker-compose exec -T -e RAILS_ENV=test api bin/rails db:create
-          docker-compose exec -T -e RAILS_ENV=test api bin/rails db:migrate
 
       - name: Run tests
         run: docker-compose exec -T api bundle exec rspec
