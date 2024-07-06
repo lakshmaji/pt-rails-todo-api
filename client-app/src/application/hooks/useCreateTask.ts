@@ -1,22 +1,43 @@
 import {
   DefaultError,
-  keepPreviousData,
   useMutation,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { ITask, TaskStatus, TasksWithMeta } from "../../domain/models/Task";
-import { getTasks } from "../use-cases/tasks/getTasks";
+import { ITask, TaskStatus } from "../../domain/models/Task";
 import { createTasks } from "../use-cases/tasks/createTask";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { TaskFormInputs } from "../../presentation/features/tasks/components/TaskForm";
+import { useState } from "react";
 
 interface CreateTaskInput {
   title: string;
   description?: string;
 }
 export const useCreateTask = (page: number, status?: TaskStatus) => {
-  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
 
-  return useMutation<ITask, DefaultError, CreateTaskInput>({
+  const openAddTask = () => {
+    setOpen(true);
+  };
+
+  const closeAddTask = () => {
+    setOpen(false);
+  };
+
+  const modalsetOpen = (value: boolean) => {
+    setOpen(value);
+    reset();
+  };
+
+  const queryClient = useQueryClient();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+    reset,
+  } = useForm<TaskFormInputs>();
+  const mutation = useMutation<ITask, DefaultError, CreateTaskInput>({
     mutationFn: ({ title, description }) => createTasks(title, description),
     onSuccess: (newlyCreatedTask, variables) => {
       if (status === undefined || status === TaskStatus.TODO) {
@@ -70,4 +91,26 @@ export const useCreateTask = (page: number, status?: TaskStatus) => {
       }
     },
   });
+
+  const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
+    const res = await mutation.mutateAsync(data);
+    if (res?.id) {
+      // assume success
+      reset();
+      setOpen(false);
+    }
+  };
+  // const submitHandler = handleSubmit(onSubmit);
+  return {
+    register,
+    onClickAddTodo: onSubmit,
+    handleSubmit,
+    reset,
+    errors,
+    isValid,
+    isPending: mutation.isPending,
+    openAddTask,
+    open,
+    modalsetOpen,
+  };
 };

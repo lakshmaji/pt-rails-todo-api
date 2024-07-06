@@ -1,7 +1,6 @@
-import { FC, useState } from "react";
-import TaskForm, { TaskFormInputs } from "./TaskForm";
+import { FC } from "react";
+import TaskForm from "./TaskForm";
 import { useCreateTask } from "../../../../application/hooks/useCreateTask";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { TaskStatus } from "../../../../domain/models/Task";
 import { useMe } from "../../../../application/hooks/useMe";
 interface Props {
@@ -9,34 +8,19 @@ interface Props {
   statusFilter?: TaskStatus;
 }
 const AddTask: FC<Props> = ({ page, statusFilter }) => {
-  const [open, setOpen] = useState(false);
-
-  const openAddTask = () => {
-    setOpen(true);
-  };
-
   const {
     register,
+    onClickAddTodo,
     handleSubmit,
-    watch,
-    formState: { errors, isValid },
-    reset,
-  } = useForm<TaskFormInputs>();
+    openAddTask,
+    errors,
+    isPending,
+    isValid,
+    open,
+    modalsetOpen,
+  } = useCreateTask(page, statusFilter);
 
-  const mutation = useCreateTask(page, statusFilter);
-  const { data: user } = useMe();
-  const onClickAddTodo: SubmitHandler<TaskFormInputs> = async (data) => {
-    const res = await mutation.mutateAsync(data);
-    if (res?.id) {
-      // assume success
-      setOpen(false);
-      reset();
-    }
-  };
-  const modalsetOpen = (value: boolean) => {
-    setOpen(value);
-    reset();
-  };
+  const { user } = useMe();
 
   return (
     <>
@@ -61,11 +45,10 @@ const AddTask: FC<Props> = ({ page, statusFilter }) => {
         setOpen={modalsetOpen}
         register={register}
         handleSubmit={handleSubmit}
-        watch={watch}
         errors={errors}
         onSubmit={onClickAddTodo}
         isValid={isValid}
-        loading={mutation.isPending}
+        loading={isPending}
       />
     </>
   );

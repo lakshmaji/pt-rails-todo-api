@@ -28,7 +28,6 @@ interface Props {
   setOpen(value: boolean): void;
   register: UseFormRegister<TaskFormInputs>;
   handleSubmit: UseFormHandleSubmit<TaskFormInputs>;
-  watch: UseFormWatch<TaskFormInputs>;
   errors: FieldErrors<TaskFormInputs>;
   onSubmit: SubmitHandler<TaskFormInputs>;
   current_task_status?: ITask;
@@ -40,7 +39,6 @@ const TaskForm: FC<Props> = ({
   setOpen,
   register,
   handleSubmit,
-  watch,
   errors,
   onSubmit,
   current_task_status,

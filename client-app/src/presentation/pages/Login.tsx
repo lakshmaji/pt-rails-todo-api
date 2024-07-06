@@ -1,47 +1,10 @@
-import { useContext } from "react";
+import React from "react";
 import logo from "../../assets/hermit-crab.svg";
-import { LoginRequest } from "../../domain/models/User";
 import { useLoginUser } from "../../application/hooks/useLoginUser";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { AuthContext } from "../../AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
 
-type SigninFormInputs = LoginRequest;
 const Login = () => {
-  const mutation = useLoginUser();
-  let location = useLocation();
+  const { register, onSubmit } = useLoginUser();
 
-  let from = location.state?.from?.pathname || "/";
-  let navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isValid },
-    reset,
-    getValues,
-  } = useForm<SigninFormInputs>({
-    defaultValues: {},
-  });
-  const { login } = useContext(AuthContext);
-
-  const onSubmit: SubmitHandler<SigninFormInputs> = async (data) => {
-    const res = await mutation.mutateAsync(data);
-    if (res?.access_token) {
-      // assume success
-      const created_at = new Date(res.created_at);
-      created_at.setSeconds(res.expires_in);
-      login(res.access_token, res.refresh_token, created_at);
-      // Send them back to the page they tried to visit when they were
-      // redirected to the login page. Use { replace: true } so we don't create
-      // another entry in the history stack for the login page.  This means that
-      // when they get to the protected page and click the back button, they
-      // won't end up back on the login page, which is also really nice for the
-      // user experience.
-      navigate(from, { replace: true });
-    }
-  };
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 rounded-md bg-white transition-all duration-700 dark:bg-slate-800">
@@ -53,7 +16,7 @@ const Login = () => {
         </div>
 
         <div className="my-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <form className="space-y-6" onSubmit={onSubmit}>
             <div>
               <label
                 htmlFor="email"

@@ -1,31 +1,9 @@
 import logo from "../../assets/hermit-crab.svg";
 import { useCreateUser } from "../../application/hooks/useCreateUser";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { CreateUserRequest } from "../../domain/models/User";
-import { useNavigate } from "react-router-dom";
 
-type SignupFormInputs = CreateUserRequest;
 const Signup = () => {
-  const mutation = useCreateUser();
+  const { onSubmit, register, getValues } = useCreateUser();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isValid },
-    reset,
-    getValues,
-  } = useForm<SignupFormInputs>();
-  const navigate = useNavigate();
-
-  const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
-    const res = await mutation.mutateAsync(data);
-    if (res?.id) {
-      // assume success
-      // TODO: make user login too if needed
-      navigate("/login");
-    }
-  };
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 rounded-md bg-white transition-all duration-700 dark:bg-slate-800">
@@ -37,7 +15,7 @@ const Signup = () => {
         </div>
 
         <div className="my-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <form className="space-y-6" onSubmit={onSubmit}>
             <div>
               <label
                 htmlFor="first_name"

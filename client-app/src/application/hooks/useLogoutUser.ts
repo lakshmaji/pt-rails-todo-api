@@ -6,13 +6,19 @@ import { useAuth } from "./useAuth";
 export const useLogoutUser = () => {
   const { auth, logout } = useAuth();
 
-  return useMutation<LogoutResponse, DefaultError>({
+  const mutation = useMutation<LogoutResponse, DefaultError>({
     mutationFn: () => signoutUser(auth.accessToken),
-    onSuccess: (newlyCreatedTask, variables) => {
+    onSuccess: (response, variables) => {
       // TODO: incase of failure, do not clear
-      // if (newlyCreatedTask.message) {
+      // if (response.message) {
       logout();
       // }
     },
   });
+
+  const onClickLogout = async () => {
+    await mutation.mutate();
+  };
+
+  return { onClickLogout };
 };

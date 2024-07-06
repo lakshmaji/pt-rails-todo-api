@@ -21,11 +21,8 @@ const Header = () => {
       localStorage.setItem("theme", "light");
     }
   }, [darkMode]);
-  const mutation = useLogoutUser();
+  const { onClickLogout } = useLogoutUser();
 
-  const onClickLogout = async () => {
-    await mutation.mutate();
-  };
   return (
     <header className="container mx-auto md:max-w-xl px-6 py-10 ">
       <div className="flex justify-between">

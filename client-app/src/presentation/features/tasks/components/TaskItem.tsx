@@ -15,16 +15,12 @@ interface Props {
 }
 
 const TaskItem: React.FC<Props> = ({ task, page, statusFilter }) => {
-  // TODO: move this to a helper or domain logic
-  const completed = task.status === TaskStatus.COMPLETED;
-  const mutation = useDeleteTask(page, statusFilter);
+  const removeTask = useDeleteTask(task.id, page, statusFilter);
 
   const deleteConfirmation = useDeleteConfirmation({
     title: `Delete ${task.title}`,
     description: `Are you sure you want to delete ${task.title}? This will be permanently removed. This action cannot be undone.`,
-    onConfirm: async () => {
-      await mutation.mutateAsync(task.id);
-    },
+    onConfirm: removeTask,
   });
 
   return (
@@ -33,14 +29,14 @@ const TaskItem: React.FC<Props> = ({ task, page, statusFilter }) => {
       data-testid="todo-item"
       role="listitem"
     >
-      {/* TODO: toggle todo and in progress icons and actions here */}
       <TaskStatusAction task={task} page={page} statusFilter={statusFilter} />
       <p
-        className={`grow ${
-          completed
+        className={clsx(
+          "grow",
+          task.status === TaskStatus.COMPLETED
             ? "text-gray-300 line-through transition-all duration-700 dark:text-slate-500"
             : "text-gray-500 transition-all duration-700 dark:text-slate-400"
-        }`}
+        )}
       >
         {task.title}
       </p>

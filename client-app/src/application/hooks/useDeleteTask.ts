@@ -6,10 +6,14 @@ import {
 import { TaskStatus } from "../../domain/models/Task";
 import { deleteTask } from "../use-cases/tasks/deleteTask";
 
-export const useDeleteTask = (page: number, status?: TaskStatus) => {
+export const useDeleteTask = (
+  id: string,
+  page: number,
+  status?: TaskStatus
+) => {
   const queryClient = useQueryClient();
 
-  return useMutation<void, DefaultError, string>({
+  const mutation = useMutation<void, DefaultError, string>({
     mutationFn: deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -17,4 +21,10 @@ export const useDeleteTask = (page: number, status?: TaskStatus) => {
       });
     },
   });
+
+  const removeTask = async () => {
+    await mutation.mutateAsync(id);
+  };
+
+  return removeTask;
 };
