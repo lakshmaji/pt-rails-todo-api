@@ -199,3 +199,72 @@ test("should be able to delete", async ({ page }) => {
   const currentFirstItem = await page.getByRole("listitem").nth(0);
   await expect(currentFirstItem.locator("p")).toHaveText(/village/);
 });
+
+test.describe("Change task status using actions", () => {
+  test("should have 6 records", async ({ page }) => {
+    // Change to todo tab
+    await page.getByRole("button", { name: "Todo", exact: true }).click();
+
+    await page.waitForTimeout(1000);
+    await expect(page.getByTestId("total-records")).toHaveText("5");
+
+    // create new task
+    await page.getByRole("button", { name: "Add Todo" }).click();
+    await page.getByLabel("Task title").click();
+    await page.getByLabel("Task title").fill("Move to new staus tab");
+    await page.getByLabel("Task description").click();
+    await page
+      .getByLabel("Task description")
+      .fill(
+        "Move the task to new status tab and page counter should be decremented"
+      );
+    await page.getByRole("button", { name: "Save" }).click();
+
+    await expect(page.getByTestId("total-records")).toHaveText("6");
+  });
+
+  test("changing status to inprogress should remove from todo list", async ({
+    page,
+  }) => {
+    // Change to todo tab
+    await page.getByRole("button", { name: "Todo", exact: true }).click();
+
+    await page.waitForTimeout(1000);
+    await expect(page.getByTestId("total-records")).toHaveText("6");
+
+    await page
+      .getByRole("listitem")
+      .nth(0)
+      .getByLabel("mark-in-progress")
+      .click();
+
+    await expect(page.getByTestId("total-records")).toContainText("5");
+
+    await expect(page.getByTestId("todo-list")).not.toContainText(
+      "Move to new staus tab"
+    );
+  });
+
+  test("should update page counter when deleted", async ({ page }) => {
+    await page
+      .getByRole("button", { name: "In Progress", exact: true })
+      .click();
+
+    await page.waitForTimeout(1000);
+
+    await expect(page.getByTestId("total-records")).toHaveText("3");
+
+    const todoItem = await page.getByRole("listitem").nth(0);
+    await expect(todoItem.locator("p")).toHaveText(/Move to new staus tab/);
+    const nextItem = await page.getByRole("listitem").nth(1);
+    await expect(nextItem.locator("p")).toHaveText(/village/);
+    await page.getByTestId("delete-btn").nth(0).click();
+
+    await page.getByRole("button", { name: "Delete" }).click();
+    await expect(page.getByTestId("delete-dialog-title")).not.toBeVisible();
+    await expect(page.getByText("Move to new staus tab")).not.toBeVisible({});
+    const currentFirstItem = await page.getByRole("listitem").nth(0);
+    await expect(currentFirstItem.locator("p")).toHaveText(/village/);
+    await expect(page.getByTestId("total-records")).toHaveText("2");
+  });
+});
