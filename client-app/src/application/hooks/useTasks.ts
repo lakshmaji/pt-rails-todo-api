@@ -1,11 +1,13 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { TaskStatus, TasksWithMeta } from "../../domain/models/Task";
 import { getTasks } from "../use-cases/tasks/getTasks";
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useTaskFilters } from "./useTaskFilters";
 
 export const useTasks = () => {
-  const [statusFilter, setStatusFilter] = useState<TaskStatus>();
-  const [page, setPage] = useState(1);
+  const { statusFilter, page, resetSearchParams, changeSearchParams } =
+    useTaskFilters();
+
   const { isPending, isError, error, data, isFetching, isPlaceholderData } =
     useQuery<TasksWithMeta>({
       queryKey: ["tasks", page, statusFilter],
@@ -13,17 +15,25 @@ export const useTasks = () => {
       placeholderData: keepPreviousData,
     });
 
-  const goToPreviousPage = () => setPage((old) => Math.max(old - 1, 0));
+  const goToPreviousPage = () => {
+    changeSearchParams({
+      page: Math.max(page - 1, 0).toString(),
+    });
+  };
   const goToNextPage = () => {
     if (!isPlaceholderData && data?.meta?.has_more) {
-      setPage((old) => old + 1);
+      changeSearchParams({
+        page: (page + 1).toString(),
+      });
     }
   };
 
   const updateFilter = (status?: TaskStatus) => {
     // whenever status filter change, reset page so that we wont get unintended results
-    setPage(1);
-    setStatusFilter(status);
+    resetSearchParams({
+      page: "1",
+      ...(status && { statusFilter: status }),
+    });
   };
 
   return {

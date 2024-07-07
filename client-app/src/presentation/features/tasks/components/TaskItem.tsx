@@ -10,12 +10,10 @@ import { TaskStatusColors } from "./constants";
 
 interface Props {
   task: ITask;
-  page: number;
-  statusFilter?: TaskStatus;
 }
 
-const TaskItem: React.FC<Props> = ({ task, page, statusFilter }) => {
-  const removeTask = useDeleteTask(task.id, page, statusFilter);
+const TaskItem: React.FC<Props> = ({ task }) => {
+  const removeTask = useDeleteTask(task.id);
 
   const deleteConfirmation = useDeleteConfirmation({
     title: `Delete ${task.title}`,
@@ -29,7 +27,7 @@ const TaskItem: React.FC<Props> = ({ task, page, statusFilter }) => {
       data-testid="todo-item"
       role="listitem"
     >
-      <TaskStatusAction task={task} page={page} statusFilter={statusFilter} />
+      <TaskStatusAction task={task} />
       <p
         className={clsx(
           "grow",
@@ -61,7 +59,7 @@ const TaskItem: React.FC<Props> = ({ task, page, statusFilter }) => {
         {task.status_human_readable}
       </span>
 
-      <EditTask task={task} page={page} statusFilter={statusFilter} />
+      <EditTask task={task} />
       <button onClick={deleteConfirmation.openDialog} data-testid="delete-btn">
         <TrashIcon className="size-6 text-gray-500" />
       </button>

@@ -3,13 +3,13 @@ import { ITask, TaskStatus } from "../../../../domain/models/Task";
 import { SparklesIcon, CheckIcon, PlayIcon } from "@heroicons/react/24/outline";
 import Spinner from "../../../common/Spinner";
 import { useUpdateTaskStatus } from "../../../../application/hooks/useUpdateTaskStatus";
+import { useTaskFilters } from "../../../../application/hooks/useTaskFilters";
 
 interface Props {
   task: ITask;
-  page: number;
-  statusFilter?: TaskStatus;
 }
-const TaskStatusAction: FC<Props> = ({ task, page, statusFilter }) => {
+const TaskStatusAction: FC<Props> = ({ task }) => {
+  const { statusFilter, page } = useTaskFilters();
   const { isPending, changeStatusToCompleted, changeStatusToInprogress } =
     useUpdateTaskStatus(task, page, statusFilter);
 
