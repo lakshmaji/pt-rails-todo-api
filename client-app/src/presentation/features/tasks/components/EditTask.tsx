@@ -1,15 +1,13 @@
 import { FC } from "react";
 import TaskForm from "./TaskForm";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { ITask, TaskStatus } from "../../../../domain/models/Task";
+import { ITask } from "../../../../domain/models/Task";
 import { useEditTask } from "../../../../application/hooks/useEditTask";
 
 interface Props {
-  page: number;
-  statusFilter?: TaskStatus;
   task: ITask;
 }
-const EditTask: FC<Props> = ({ task, page, statusFilter }) => {
+const EditTask: FC<Props> = ({ task }) => {
   const {
     open,
     openAddTask,
@@ -20,7 +18,7 @@ const EditTask: FC<Props> = ({ task, page, statusFilter }) => {
     isValid,
     isPending,
     onClickUpdateTodo,
-  } = useEditTask(task, page, statusFilter);
+  } = useEditTask(task);
 
   return (
     <>

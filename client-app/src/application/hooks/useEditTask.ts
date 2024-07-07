@@ -1,12 +1,13 @@
-import { ITask, TaskStatus, toTaskStatus } from "../../domain/models/Task";
+import { ITask, toTaskStatus } from "../../domain/models/Task";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { TaskFormInputs } from "../../presentation/features/tasks/components/TaskForm";
 import { useUpdateTask } from "./useUpdateTask";
+import { useTaskFilters } from "./useTaskFilters";
 
-export const useEditTask = (task: ITask, page: number, status?: TaskStatus) => {
+export const useEditTask = (task: ITask) => {
   const [open, setOpen] = useState(false);
-
+  const { statusFilter: status, page } = useTaskFilters();
   const {
     register,
     handleSubmit,

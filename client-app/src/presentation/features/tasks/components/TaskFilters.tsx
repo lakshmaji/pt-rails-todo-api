@@ -1,5 +1,5 @@
-import React, { FC } from "react";
 import { TaskStatus } from "../../../../domain/models/Task";
+import { useTaskFilters } from "../../../../application/hooks/useTaskFilters";
 
 const STATUS_FILTERS = [
   {
@@ -20,11 +20,8 @@ const STATUS_FILTERS = [
   },
 ];
 
-interface Props {
-  statusFilter?: TaskStatus;
-  updateFilter: (status?: TaskStatus) => void;
-}
-const TaskFilters: FC<Props> = ({ statusFilter, updateFilter }) => {
+const TaskFilters = () => {
+  const { statusFilter, resetSearchParams } = useTaskFilters();
   return (
     <section className="container mx-auto py-4">
       <div className="flex justify-center gap-5 rounded-md bg-white p-4 transition-all duration-700 dark:bg-slate-800">
@@ -32,7 +29,12 @@ const TaskFilters: FC<Props> = ({ statusFilter, updateFilter }) => {
           return (
             <button
               key={i}
-              onClick={() => updateFilter(eachStatus.value)}
+              onClick={() =>
+                resetSearchParams({
+                  page: "1",
+                  ...(eachStatus.value && { statusFilter: eachStatus.value }),
+                })
+              }
               type="button"
               className={`font-thin  pb-2 ${
                 statusFilter === eachStatus.value

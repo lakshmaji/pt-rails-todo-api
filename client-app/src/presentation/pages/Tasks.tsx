@@ -14,8 +14,6 @@ const Tasks = () => {
     isFetching,
     goToNextPage,
     goToPreviousPage,
-    updateFilter,
-    statusFilter,
     page,
     prevPageDisabled,
     nextPageDisabled,
@@ -32,20 +30,15 @@ const Tasks = () => {
 
   return (
     <>
-      <AddTask page={page} statusFilter={statusFilter} />
-      <TaskFilters statusFilter={statusFilter} updateFilter={updateFilter} />
+      <AddTask />
+      <TaskFilters />
       <div
         className="rounded-t-md bg-white transition-all duration-700 dark:bg-slate-800"
         data-testid="todo-list"
         role="list"
       >
         {tasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            page={page}
-            statusFilter={statusFilter}
-          />
+          <TaskItem key={task.id} task={task} />
         ))}
       </div>
       <Paginate

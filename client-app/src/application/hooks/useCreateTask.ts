@@ -8,20 +8,18 @@ import { createTasks } from "../use-cases/tasks/createTask";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { TaskFormInputs } from "../../presentation/features/tasks/components/TaskForm";
 import { useState } from "react";
+import { useTaskFilters } from "./useTaskFilters";
 
 interface CreateTaskInput {
   title: string;
   description?: string;
 }
-export const useCreateTask = (page: number, status?: TaskStatus) => {
+export const useCreateTask = () => {
   const [open, setOpen] = useState(false);
+  const { statusFilter: status, page } = useTaskFilters();
 
   const openAddTask = () => {
     setOpen(true);
-  };
-
-  const closeAddTask = () => {
-    setOpen(false);
   };
 
   const modalsetOpen = (value: boolean) => {

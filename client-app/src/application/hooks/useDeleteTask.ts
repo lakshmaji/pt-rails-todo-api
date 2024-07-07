@@ -3,14 +3,11 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { TaskStatus } from "../../domain/models/Task";
 import { deleteTask } from "../use-cases/tasks/deleteTask";
+import { useTaskFilters } from "./useTaskFilters";
 
-export const useDeleteTask = (
-  id: string,
-  page: number,
-  status?: TaskStatus
-) => {
+export const useDeleteTask = (id: string) => {
+  const { statusFilter: status, page } = useTaskFilters();
   const queryClient = useQueryClient();
 
   const mutation = useMutation<void, DefaultError, string>({

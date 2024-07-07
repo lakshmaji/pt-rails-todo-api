@@ -11,7 +11,6 @@ import {
   SubmitHandler,
   UseFormHandleSubmit,
   UseFormRegister,
-  UseFormWatch,
 } from "react-hook-form";
 import { ITask } from "../../../../domain/models/Task";
 import clsx from "clsx";

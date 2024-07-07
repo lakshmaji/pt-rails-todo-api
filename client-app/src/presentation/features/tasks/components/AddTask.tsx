@@ -1,13 +1,8 @@
-import { FC } from "react";
 import TaskForm from "./TaskForm";
 import { useCreateTask } from "../../../../application/hooks/useCreateTask";
-import { TaskStatus } from "../../../../domain/models/Task";
 import { useMe } from "../../../../application/hooks/useMe";
-interface Props {
-  page: number;
-  statusFilter?: TaskStatus;
-}
-const AddTask: FC<Props> = ({ page, statusFilter }) => {
+
+const AddTask = () => {
   const {
     register,
     onClickAddTodo,
@@ -18,7 +13,7 @@ const AddTask: FC<Props> = ({ page, statusFilter }) => {
     isValid,
     open,
     modalsetOpen,
-  } = useCreateTask(page, statusFilter);
+  } = useCreateTask();
 
   const { user } = useMe();
 
