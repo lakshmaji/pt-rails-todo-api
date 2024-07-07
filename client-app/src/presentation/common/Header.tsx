@@ -1,31 +1,15 @@
-import { useEffect, useState } from "react";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { useLogoutUser } from "../../application/hooks/useLogoutUser";
 import { useAuth } from "../../application/hooks/useAuth";
-
-// TODO: move this to a hook
-const initialStateDarkMode = localStorage.getItem("theme") === "dark";
+import useDarkMode from "../../application/hooks/useDarkMode";
 
 const Header = () => {
-  const [darkMode, setDarkMode] = useState(initialStateDarkMode);
+  const [darkMode, toggleDarkMode] = useDarkMode();
   const { auth } = useAuth();
+  const { onClickLogout } = useLogoutUser();
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
-  const mutation = useLogoutUser();
-
-  const onClickLogout = async () => {
-    await mutation.mutate();
-  };
   return (
     <header className="container mx-auto md:max-w-xl px-6 py-10 ">
       <div className="flex justify-between">
@@ -60,7 +44,7 @@ const Header = () => {
 
           <button
             type="button"
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={toggleDarkMode}
             className={clsx(
               "text-white focus:ring-4 focus:outline-none focus:ring-indigo-200 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2",
               darkMode

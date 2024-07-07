@@ -1,36 +1,33 @@
-import React, { useState } from "react";
 import { useTasks } from "../../application/hooks/useTasks";
 import TaskItem from "../features/tasks/components/TaskItem";
 import TaskFilters from "../features/tasks/components/TaskFilters";
 import Paginate from "../features/tasks/components/Paginate";
 import AddTask from "../features/tasks/components/AddTask";
-import { TaskStatus } from "../../domain/models/Task";
 import Spinner from "../common/Spinner";
 
 const Tasks = () => {
-  const [statusFilter, setStatusFilter] = useState<TaskStatus>();
-  const [page, setPage] = React.useState(1);
+  const {
+    isPending,
+    isError,
+    error,
+    tasks,
+    isFetching,
+    goToNextPage,
+    goToPreviousPage,
+    updateFilter,
+    statusFilter,
+    page,
+    prevPageDisabled,
+    nextPageDisabled,
+    total_records,
+    per_page,
+  } = useTasks();
 
-  const { isPending, isError, error, data, isFetching, isPlaceholderData } =
-    useTasks(page, statusFilter);
-
-  const goToPreviousPage = () => setPage((old) => Math.max(old - 1, 0));
-  const goToNextPage = () => {
-    if (!isPlaceholderData && data?.meta?.has_more) {
-      setPage((old) => old + 1);
-    }
-  };
-
-  const updateFilter = (status?: TaskStatus) => {
-    // whenever status filter change, reset page so that we wont get unintended results
-    setPage(1);
-    setStatusFilter(status);
-  };
   if (isPending) {
     return <div>Loading...</div>;
   }
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return <div>Error: {error?.message}</div>;
   }
 
   return (
@@ -42,7 +39,7 @@ const Tasks = () => {
         data-testid="todo-list"
         role="list"
       >
-        {data.data?.map((task) => (
+        {tasks.map((task) => (
           <TaskItem
             key={task.id}
             task={task}
@@ -54,11 +51,11 @@ const Tasks = () => {
       <Paginate
         goToPreviousPage={goToPreviousPage}
         goToNextPage={goToNextPage}
-        prevPageDisabled={page === 1}
-        nextPageDisabled={isPlaceholderData || !data.meta?.has_more}
+        prevPageDisabled={prevPageDisabled}
+        nextPageDisabled={nextPageDisabled}
         page={page}
-        count={data.meta.total_count}
-        per_page={data.meta.per_page}
+        count={total_records}
+        per_page={per_page}
       />
       {isFetching ? (
         <div
