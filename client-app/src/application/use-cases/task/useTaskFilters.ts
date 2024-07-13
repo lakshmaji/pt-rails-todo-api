@@ -1,12 +1,5 @@
-import { TaskStatus } from "../../../domain/models/Task";
+import { toTaskStatus } from "../../../domain/models/Task";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
-
-const toTaskStatus = (status: string | null): TaskStatus => {
-  if (status && Object.values(TaskStatus).includes(status as TaskStatus)) {
-    return status as TaskStatus;
-  }
-  return undefined as unknown as TaskStatus;
-};
 
 const toPage = (page: string | null): number => {
   // handles NaN
