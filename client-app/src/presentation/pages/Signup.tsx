@@ -1,5 +1,5 @@
 import logo from "../../assets/hermit-crab.svg";
-import { useCreateUser } from "../../application/hooks/useCreateUser";
+import { useCreateUser } from "../../application/use-cases/user/useCreateUser";
 
 const Signup = () => {
   const { onSubmit, register, getValues } = useCreateUser();

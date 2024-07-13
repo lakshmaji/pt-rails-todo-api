@@ -1,7 +1,7 @@
-import { ITask, toTaskStatus } from "../../domain/models/Task";
+import { ITask, toTaskStatus } from "../../../domain/models/Task";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { TaskFormInputs } from "../../presentation/features/tasks/components/TaskForm";
+import { TaskFormInputs } from "../../../presentation/features/task/components/TaskForm";
 import { useUpdateTask } from "./useUpdateTask";
 import { useTaskFilters } from "./useTaskFilters";
 

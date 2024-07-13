@@ -15,13 +15,7 @@ export interface ITask {
 export interface ServerTask {
   id: string;
   type: "task";
-  attributes: {
-    id: string;
-    title: string;
-    description: string;
-    status: TaskStatus;
-    status_human_readable: string;
-  };
+  attributes: ITask;
 }
 
 export interface TaskResponse {

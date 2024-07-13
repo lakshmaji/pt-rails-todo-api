@@ -1,10 +1,10 @@
 import { DefaultError, useMutation } from "@tanstack/react-query";
-import { LoginRequest, LoginResponse } from "../../domain/models/User";
-import { signinUser } from "../use-cases/auth/signinUser";
+import { LoginRequest, LoginResponse } from "../../../domain/models/User";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AuthContext } from "../../AuthContext";
+import { AuthContext } from "../../../AuthContext";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { authRepository } from "../../services/repositories/auth-repository";
 
 type SigninFormInputs = LoginRequest;
 
@@ -14,7 +14,7 @@ export const useLoginUser = () => {
   const from = location.state?.from?.pathname || "/";
   const { login } = useContext(AuthContext);
   const mutation = useMutation<LoginResponse, DefaultError, LoginRequest>({
-    mutationFn: (payload) => signinUser(payload),
+    mutationFn: (payload) => authRepository.login(payload),
     onSuccess: (newlyCreatedTask, variables) => {
       // What should we do ?
       // TODO: redirect to some page ?

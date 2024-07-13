@@ -2,8 +2,8 @@ import { FC } from "react";
 import { ITask, TaskStatus } from "../../../../domain/models/Task";
 import { SparklesIcon, CheckIcon, PlayIcon } from "@heroicons/react/24/outline";
 import Spinner from "../../../common/Spinner";
-import { useUpdateTaskStatus } from "../../../../application/hooks/useUpdateTaskStatus";
-import { useTaskFilters } from "../../../../application/hooks/useTaskFilters";
+import { useUpdateTaskStatus } from "../../../../application/use-cases/task/useUpdateTaskStatus";
+import { useTaskFilters } from "../../../../application/use-cases/task/useTaskFilters";
 
 interface Props {
   task: ITask;

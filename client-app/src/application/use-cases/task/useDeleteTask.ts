@@ -3,15 +3,15 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { deleteTask } from "../use-cases/tasks/deleteTask";
 import { useTaskFilters } from "./useTaskFilters";
+import { taskRepository } from "../../services/repositories/task-repository";
 
 export const useDeleteTask = (id: string) => {
   const { statusFilter: status, page } = useTaskFilters();
   const queryClient = useQueryClient();
 
   const mutation = useMutation<void, DefaultError, string>({
-    mutationFn: deleteTask,
+    mutationFn: taskRepository.deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["tasks", page, status],

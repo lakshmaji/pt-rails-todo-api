@@ -1,6 +1,6 @@
 import TaskForm from "./TaskForm";
-import { useCreateTask } from "../../../../application/hooks/useCreateTask";
-import { useMe } from "../../../../application/hooks/useMe";
+import { useCreateTask } from "../../../../application/use-cases/task/useCreateTask";
+import { useMe } from "../../../../application/use-cases/user/useMe";
 
 const AddTask = () => {
   const {

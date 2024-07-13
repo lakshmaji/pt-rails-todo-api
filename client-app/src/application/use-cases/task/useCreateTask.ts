@@ -3,12 +3,12 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { ITask, TaskStatus } from "../../domain/models/Task";
-import { createTasks } from "../use-cases/tasks/createTask";
+import { ITask, TaskStatus } from "../../../domain/models/Task";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { TaskFormInputs } from "../../presentation/features/tasks/components/TaskForm";
+import { TaskFormInputs } from "../../../presentation/features/task/components/TaskForm";
 import { useState } from "react";
 import { useTaskFilters } from "./useTaskFilters";
+import { taskRepository } from "../../services/repositories/task-repository";
 
 interface CreateTaskInput {
   title: string;
@@ -36,7 +36,8 @@ export const useCreateTask = () => {
     reset,
   } = useForm<TaskFormInputs>();
   const mutation = useMutation<ITask, DefaultError, CreateTaskInput>({
-    mutationFn: ({ title, description }) => createTasks(title, description),
+    mutationFn: ({ title, description }) =>
+      taskRepository.createTask(title, description),
     onSuccess: (newlyCreatedTask, variables) => {
       if (status === undefined || status === TaskStatus.TODO) {
         // On first page, then only shift the new task

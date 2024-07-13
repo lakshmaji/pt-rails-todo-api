@@ -8,8 +8,8 @@ import {
   TaskStatus,
   TasksWithMeta,
   UpdateTaskInput,
-} from "../../domain/models/Task";
-import { updateTask } from "../use-cases/tasks/updateTask";
+} from "../../../domain/models/Task";
+import { taskRepository } from "../../services/repositories/task-repository";
 
 interface UpdateTaskVars extends UpdateTaskInput {
   id: string;
@@ -18,7 +18,7 @@ export const useUpdateTask = (page: number, status?: TaskStatus) => {
   const queryClient = useQueryClient();
 
   return useMutation<ITask, DefaultError, UpdateTaskVars>({
-    mutationFn: ({ id, ...params }) => updateTask(id, params),
+    mutationFn: ({ id, ...params }) => taskRepository.updateTask(id, params),
     onSuccess: (newlyUpdatedTask, variables) => {
       if (typeof status !== "undefined") {
         // when specific status filter applied

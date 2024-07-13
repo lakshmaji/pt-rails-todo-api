@@ -1,4 +1,4 @@
-import { useDeleteTask } from "../../../../application/hooks/useDeleteTask";
+import { useDeleteTask } from "../../../../application/use-cases/task/useDeleteTask";
 import { ITask, TaskStatus } from "../../../../domain/models/Task";
 import EditTask from "./EditTask";
 import { TrashIcon } from "@heroicons/react/24/outline";

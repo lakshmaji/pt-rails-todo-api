@@ -1,4 +1,4 @@
-import { TaskStatus } from "../../domain/models/Task";
+import { TaskStatus } from "../../../domain/models/Task";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 
 const toTaskStatus = (status: string | null): TaskStatus => {

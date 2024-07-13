@@ -1,4 +1,4 @@
-import { ITask, TaskStatus } from "../../domain/models/Task";
+import { ITask, TaskStatus } from "../../../domain/models/Task";
 import { useUpdateTask } from "./useUpdateTask";
 
 export const useUpdateTaskStatus = (

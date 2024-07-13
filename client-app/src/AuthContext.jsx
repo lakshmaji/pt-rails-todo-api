@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import TokenService from "./tokenService";
-import { useRefreshToken } from "./application/hooks/useRefreshToken";
+import { useRefreshToken } from "./application/use-cases/auth/useRefreshToken";
 
 const AuthContext = createContext();
 

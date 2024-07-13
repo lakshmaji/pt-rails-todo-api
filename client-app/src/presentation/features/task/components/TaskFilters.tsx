@@ -1,5 +1,5 @@
 import { TaskStatus } from "../../../../domain/models/Task";
-import { useTaskFilters } from "../../../../application/hooks/useTaskFilters";
+import { useTaskFilters } from "../../../../application/use-cases/task/useTaskFilters";
 
 const STATUS_FILTERS = [
   {

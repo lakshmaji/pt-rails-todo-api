@@ -2,7 +2,7 @@ import { FC } from "react";
 import TaskForm from "./TaskForm";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { ITask } from "../../../../domain/models/Task";
-import { useEditTask } from "../../../../application/hooks/useEditTask";
+import { useEditTask } from "../../../../application/use-cases/task/useEditTask";
 
 interface Props {
   task: ITask;

@@ -1,8 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { TaskStatus, TasksWithMeta } from "../../domain/models/Task";
-import { getTasks } from "../use-cases/tasks/getTasks";
-import { useSearchParams } from "react-router-dom";
+import { TaskStatus, TasksWithMeta } from "../../../domain/models/Task";
 import { useTaskFilters } from "./useTaskFilters";
+import { taskRepository } from "../../services/repositories/task-repository";
 
 export const useTasks = () => {
   const { statusFilter, page, resetSearchParams, changeSearchParams } =
@@ -11,7 +10,7 @@ export const useTasks = () => {
   const { isPending, isError, error, data, isFetching, isPlaceholderData } =
     useQuery<TasksWithMeta>({
       queryKey: ["tasks", page, statusFilter],
-      queryFn: () => getTasks(page, statusFilter),
+      queryFn: () => taskRepository.getTasks(page, statusFilter),
       placeholderData: keepPreviousData,
     });
 

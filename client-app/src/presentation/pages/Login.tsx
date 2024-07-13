@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "../../assets/hermit-crab.svg";
-import { useLoginUser } from "../../application/hooks/useLoginUser";
+import { useLoginUser } from "../../application/use-cases/auth/useLoginUser";
 
 const Login = () => {
   const { register, onSubmit } = useLoginUser();
