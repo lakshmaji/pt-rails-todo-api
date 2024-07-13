@@ -1,7 +1,7 @@
 import { DefaultError, useMutation } from "@tanstack/react-query";
 import { LoginRequest, LoginResponse } from "../../../domain/models/User";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AuthContext } from "../../../AuthContext";
+import { AuthContext } from "../../providers/AuthProvider";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { authRepository } from "../../services/repositories/auth-repository";
@@ -35,7 +35,7 @@ export const useLoginUser = () => {
       // assume success
       const created_at = new Date(res.created_at);
       created_at.setSeconds(res.expires_in);
-      login(res.access_token, res.refresh_token, created_at);
+      login(res.access_token, res.refresh_token, created_at.valueOf());
       // Send them back to the page they tried to visit when they were
       // redirected to the login page. Use { replace: true } so we don't create
       // another entry in the history stack for the login page.  This means that

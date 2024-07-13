@@ -8,7 +8,7 @@ import ErrorPage from "./error-page";
 import Tasks from "./presentation/pages/Tasks";
 import Login from "./presentation/pages/Login";
 import Signup from "./presentation/pages/Signup";
-import { AuthProvider } from "./AuthContext";
+import { AuthProvider } from "./application/providers/AuthProvider";
 import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter([

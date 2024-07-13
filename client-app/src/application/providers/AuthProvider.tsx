@@ -4,17 +4,38 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  FC,
+  ReactNode,
 } from "react";
-import { useNavigate } from "react-router-dom";
-import TokenService from "./tokenService";
-import { useRefreshToken } from "./application/use-cases/auth/useRefreshToken";
+import TokenService from "../../tokenService";
+import { useRefreshToken } from "../use-cases/auth/useRefreshToken";
 
-const AuthContext = createContext();
+interface AuthContextState {
+  accessToken: string;
+  refreshToken: string;
+  isLoggedIn: boolean;
+  state: "PENDING" | "READY";
+}
 
-const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({
-    accessToken: null,
-    refreshToken: null,
+type AuthContextType = {
+  auth: AuthContextState;
+  login: (
+    accessToken: string,
+    refreshToken: string,
+    expires_at: number
+  ) => void;
+  logout: () => void;
+};
+
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+
+interface Props {
+  children?: ReactNode | undefined;
+}
+const AuthProvider: FC<Props> = ({ children }) => {
+  const [auth, setAuth] = useState<AuthContextState>({
+    accessToken: "",
+    refreshToken: "",
     isLoggedIn: false,
     state: "PENDING",
   });
@@ -26,14 +47,14 @@ const AuthProvider = ({ children }) => {
   } = useRefreshToken();
 
   const restoreAcessToken = useCallback(
-    async (oldRefreshToken) => {
+    async (oldRefreshToken: string) => {
       try {
         const res = await callRefreshTokenAPI(oldRefreshToken);
         if (res?.access_token) {
           // assume success
           const created_at = new Date(res.created_at);
           created_at.setSeconds(res.expires_in);
-          login(res.access_token, res.refresh_token, created_at);
+          login(res.access_token, res.refresh_token, created_at.valueOf());
         } else {
           logout();
         }
@@ -54,7 +75,11 @@ const AuthProvider = ({ children }) => {
     // FIXME: remove setTimeout
     // setTimeout(() => {
     const hasAccessToken = accessToken;
-    if (accessToken && refreshToken && auth.state !== "READY") {
+    if (
+      isNotEmpty(accessToken) &&
+      isNotEmpty(refreshToken) &&
+      auth.state !== "READY"
+    ) {
       // setAuth({
       //   accessToken,
       //   refreshToken,
@@ -62,40 +87,48 @@ const AuthProvider = ({ children }) => {
       //   isLoggedIn: true,
       //   state: "READY",
       // });
-      login(accessToken, refreshToken, expiresAt);
-    } else if (refreshToken === null && auth.state !== "READY") {
+      login(accessToken, refreshToken, parseInt(expiresAt || "0"));
+    } else if (isEmpty(refreshToken) && auth.state !== "READY") {
       // setAuth({
       //   accessToken,
       //   refreshToken,
       //   isLoggedIn: false,
       //   state: "READY",
       // });
-      login(accessToken, refreshToken, expiresAt);
+      login(accessToken ?? "", refreshToken ?? "", parseInt(expiresAt || "0"));
     } else if (
-      refreshToken &&
+      isNotEmpty(refreshToken) &&
       auth.state !== "READY" &&
       !hasAccessToken?.length
     ) {
-      restoreAcessToken(refreshToken);
+      restoreAcessToken(refreshToken ?? "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.state, restoreAcessToken]);
 
-  const login = (accessToken, refreshToken, expires_at) => {
+  const login = (
+    accessToken: string | null,
+    refreshToken: string | null,
+    expires_at: number
+  ) => {
     setAuth({
-      accessToken,
-      refreshToken,
+      accessToken: accessToken ?? "",
+      refreshToken: refreshToken ?? "",
       isLoggedIn: !!accessToken?.length,
       state: "READY",
     });
-    TokenService.saveTokens(accessToken, refreshToken, expires_at);
+    TokenService.saveTokens(
+      accessToken ?? "",
+      refreshToken ?? "",
+      expires_at.toString()
+    );
   };
 
   const logout = () => {
     TokenService.removeTokens();
     setAuth({
-      accessToken: null,
-      refreshToken: null,
+      accessToken: "",
+      refreshToken: "",
       isLoggedIn: false,
       state: "READY",
     });
@@ -120,5 +153,15 @@ const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+const isEmpty = (value: string | null): boolean => {
+  if (value === null) {
+    return true;
+  }
+  return (value || "").trim().length === 0;
+};
+
+const isNotEmpty = (value: string | null): boolean =>
+  !!value && !isEmpty(value);
 
 export { AuthContext, AuthProvider };
