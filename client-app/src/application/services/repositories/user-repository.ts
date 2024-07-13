@@ -7,7 +7,6 @@ import { transformApiPostToDomain } from "../transformers/task";
 
 class UserRepository implements IUserRepository {
   async me(): Promise<UserProfile> {
-    // transformApiToDomain
     const result = await userApiService.get();
     return result.data;
   }

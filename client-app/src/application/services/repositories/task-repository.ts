@@ -13,7 +13,6 @@ import {
 
 class TaskRepository implements ITaskRepository {
   async getTasks(page: number, status?: TaskStatus): Promise<TasksWithMeta> {
-    // transformApiToDomain
     const result = await taskApiService.fetchTasks({
       page,
       ...(status && { status }),

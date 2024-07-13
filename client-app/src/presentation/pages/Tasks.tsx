@@ -1,8 +1,8 @@
-import { useTasks } from "../../application/hooks/useTasks";
-import TaskItem from "../features/tasks/components/TaskItem";
-import TaskFilters from "../features/tasks/components/TaskFilters";
-import Paginate from "../features/tasks/components/Paginate";
-import AddTask from "../features/tasks/components/AddTask";
+import { useTasks } from "../../application/use-cases/task/useTasks";
+import TaskItem from "../features/task/components/TaskItem";
+import TaskFilters from "../features/task/components/TaskFilters";
+import Paginate from "../features/task/components/Paginate";
+import AddTask from "../features/task/components/AddTask";
 import Spinner from "../common/Spinner";
 
 const Tasks = () => {

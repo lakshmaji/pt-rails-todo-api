@@ -15,13 +15,7 @@ export interface ITask {
 export interface ServerTask {
   id: string;
   type: "task";
-  attributes: {
-    id: string;
-    title: string;
-    description: string;
-    status: TaskStatus;
-    status_human_readable: string;
-  };
+  attributes: ITask;
 }
 
 export interface TaskResponse {
@@ -45,7 +39,10 @@ export interface UpdateTaskInput {
   status?: TaskStatus;
 }
 
-export function toTaskStatus(status: string): TaskStatus | undefined {
+export function toTaskStatus(status: string | null): TaskStatus | undefined {
+  if (!status) {
+    return undefined;
+  }
   switch (status) {
     case TaskStatus.TODO:
       return TaskStatus.TODO;

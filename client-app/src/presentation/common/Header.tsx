@@ -1,7 +1,7 @@
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { useLogoutUser } from "../../application/hooks/useLogoutUser";
+import { useLogoutUser } from "../../application/use-cases/auth/useLogoutUser";
 import { useAuth } from "../../application/hooks/useAuth";
 import useDarkMode from "../../application/hooks/useDarkMode";
 
