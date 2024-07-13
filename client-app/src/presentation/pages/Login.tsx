@@ -3,7 +3,7 @@ import logo from "../../assets/hermit-crab.svg";
 import { useLoginUser } from "../../application/use-cases/auth/useLoginUser";
 
 const Login = () => {
-  const { register, onSubmit } = useLoginUser();
+  const { register, onSubmit, errors } = useLoginUser();
 
   return (
     <>
@@ -30,15 +30,14 @@ const Login = () => {
                   type="email"
                   autoComplete="off"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("email", {
-                    required: "required",
-                    pattern: {
-                      value: /\S+@\S+\.\S+/,
-                      message: "Entered value does not match email format",
-                    },
-                  })}
+                  {...register("email")}
                 />
               </div>
+              {errors.email && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-600">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -56,11 +55,14 @@ const Login = () => {
                   type="password"
                   autoComplete="off"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("password", {
-                    required: "You must specify a password",
-                  })}
+                  {...register("password")}
                 />
               </div>
+              {errors.password && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-600">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div>

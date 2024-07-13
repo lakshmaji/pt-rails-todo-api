@@ -1,9 +1,10 @@
 import { ITask, toTaskStatus } from "../../../domain/models/Task";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { TaskFormInputs } from "../../../presentation/features/task/components/TaskForm";
 import { useUpdateTask } from "./useUpdateTask";
 import { useTaskFilters } from "./useTaskFilters";
+import { formSchema } from "./constants";
+import { z } from "zod";
 
 export const useEditTask = (task: ITask) => {
   const [open, setOpen] = useState(false);
@@ -13,11 +14,13 @@ export const useEditTask = (task: ITask) => {
     handleSubmit,
     formState: { errors, isValid },
     reset,
-  } = useForm<TaskFormInputs>({});
+  } = useForm<z.infer<typeof formSchema>>({});
 
   const mutation = useUpdateTask(page, status);
 
-  const onClickUpdateTodo: SubmitHandler<TaskFormInputs> = async (data) => {
+  const onClickUpdateTodo: SubmitHandler<z.infer<typeof formSchema>> = async (
+    data
+  ) => {
     const payload = {
       title: data.title,
       description: data.description,
@@ -37,7 +40,7 @@ export const useEditTask = (task: ITask) => {
       reset({
         title: task.title,
         description: task.description,
-        task_status: task.status.toString(),
+        task_status: task.status,
       });
     }
     setOpen(true);

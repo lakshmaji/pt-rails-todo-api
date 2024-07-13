@@ -2,7 +2,7 @@ import logo from "../../assets/hermit-crab.svg";
 import { useCreateUser } from "../../application/use-cases/user/useCreateUser";
 
 const Signup = () => {
-  const { onSubmit, register, getValues } = useCreateUser();
+  const { onSubmit, register, errors } = useCreateUser();
 
   return (
     <>
@@ -28,9 +28,14 @@ const Signup = () => {
                   id="first_name"
                   autoComplete="off"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("first_name", { required: true, maxLength: 30 })}
+                  {...register("first_name")}
                 />
               </div>
+              {errors.first_name && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-600">
+                  {errors.first_name.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -45,9 +50,14 @@ const Signup = () => {
                   id="last_name"
                   autoComplete="off"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("last_name", { required: true, maxLength: 30 })}
+                  {...register("last_name")}
                 />
               </div>
+              {errors.last_name && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-600">
+                  {errors.last_name.message}
+                </p>
+              )}
             </div>
             <div>
               <label
@@ -62,15 +72,14 @@ const Signup = () => {
                   type="email"
                   autoComplete="off"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("email", {
-                    required: "required",
-                    pattern: {
-                      value: /\S+@\S+\.\S+/,
-                      message: "Entered value does not match email format",
-                    },
-                  })}
+                  {...register("email")}
                 />
               </div>
+              {errors.email && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-600">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -88,15 +97,14 @@ const Signup = () => {
                   type="password"
                   autoComplete="off"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("password", {
-                    required: "You must specify a password",
-                    minLength: {
-                      value: 5,
-                      message: "Password must have at least 5 characters",
-                    },
-                  })}
+                  {...register("password")}
                 />
               </div>
+              {errors.password && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-600">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -112,17 +120,14 @@ const Signup = () => {
                   type="password"
                   autoComplete="off"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("password_confirmation", {
-                    required: "Please confirm password!",
-                    validate: {
-                      matchesPreviousPassword: (value) => {
-                        const { password } = getValues();
-                        return password === value || "Passwords should match!";
-                      },
-                    },
-                  })}
+                  {...register("password_confirmation")}
                 />
               </div>
+              {errors.password_confirmation && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-600">
+                  {errors.password_confirmation.message}
+                </p>
+              )}
             </div>
 
             <div>

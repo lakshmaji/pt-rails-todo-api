@@ -5,10 +5,12 @@ import {
 } from "@tanstack/react-query";
 import { ITask, TaskStatus } from "../../../domain/models/Task";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { TaskFormInputs } from "../../../presentation/features/task/components/TaskForm";
 import { useState } from "react";
 import { useTaskFilters } from "./useTaskFilters";
 import { taskRepository } from "../../services/repositories/task-repository";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formSchema } from "./constants";
+import { z } from "zod";
 
 interface CreateTaskInput {
   title: string;
@@ -31,10 +33,12 @@ export const useCreateTask = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid },
     reset,
-  } = useForm<TaskFormInputs>();
+  } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
+
   const mutation = useMutation<ITask, DefaultError, CreateTaskInput>({
     mutationFn: ({ title, description }) =>
       taskRepository.createTask(title, description),
@@ -91,7 +95,7 @@ export const useCreateTask = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const res = await mutation.mutateAsync(data);
     if (res?.id) {
       // assume success
@@ -99,7 +103,7 @@ export const useCreateTask = () => {
       setOpen(false);
     }
   };
-  // const submitHandler = handleSubmit(onSubmit);
+
   return {
     register,
     onClickAddTodo: onSubmit,

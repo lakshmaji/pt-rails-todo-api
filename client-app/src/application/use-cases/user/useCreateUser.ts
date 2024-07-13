@@ -6,11 +6,19 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { authRepository } from "../../services/repositories/auth-repository";
-
-type SignupFormInputs = CreateUserRequest;
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formSchema } from "./constants";
+import { toast } from "react-toastify";
 
 export const useCreateUser = () => {
-  const { register, handleSubmit, getValues } = useForm<SignupFormInputs>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
   const navigate = useNavigate();
 
   const mutation = useMutation<
@@ -19,20 +27,17 @@ export const useCreateUser = () => {
     CreateUserRequest
   >({
     mutationFn: (payload) => authRepository.createAccount(payload),
-    onSuccess: () => {
-      // What should we do ?
-      // TODO: redirect to some page ?
+    onSuccess: (response) => {
+      if (response.user?.id) {
+        toast.success("Success");
+        navigate("/login");
+      }
     },
   });
 
-  const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
-    const res = await mutation.mutateAsync(data);
-    if (res.user?.id) {
-      // assume success
-      // TODO: make user login too if needed
-      navigate("/login");
-    }
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = (data) => {
+    mutation.mutate(data);
   };
-  const submitHandler = handleSubmit(onSubmit);
-  return { register, onSubmit: submitHandler, getValues };
+
+  return { register, onSubmit: handleSubmit(onSubmit), errors };
 };

@@ -82,6 +82,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
       auth.state !== AuthState.READY &&
       isNotEmpty(accessToken)
     ) {
+      // TODO: no need to fetch refresh token, when there is one
       restoreAcessToken(refreshToken ?? "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

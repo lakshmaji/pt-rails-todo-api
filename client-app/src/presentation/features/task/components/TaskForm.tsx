@@ -15,12 +15,10 @@ import {
 import { ITask } from "../../../../domain/models/Task";
 import clsx from "clsx";
 import { TASK_STATUS_OPTIONS } from "./constants";
+import { formSchema } from "../../../../application/use-cases/task/constants";
+import { z } from "zod";
 
-export type TaskFormInputs = {
-  title: string;
-  description: string;
-  task_status: string;
-};
+export type TaskFormInputs = z.infer<typeof formSchema>;
 
 interface Props {
   open: boolean;
@@ -179,6 +177,7 @@ const TaskForm: FC<Props> = ({
                                         current_task_status?.status
                                       }
                                       value={tsOption.value}
+                                      disabled={!current_task_status?.id}
                                     />
                                   </div>
                                   <div className="pl-7 text-sm leading-6">
