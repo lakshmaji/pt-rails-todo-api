@@ -10,11 +10,15 @@ import React, {
 import TokenService from "../../tokenService";
 import { useRefreshToken } from "../use-cases/auth/useRefreshToken";
 
+enum AuthState {
+  PENDING = "PENDING",
+  READY = "READY",
+}
 interface AuthContextState {
   accessToken: string;
   refreshToken: string;
   isLoggedIn: boolean;
-  state: "PENDING" | "READY";
+  state: AuthState;
 }
 
 type AuthContextType = {
@@ -37,14 +41,10 @@ const AuthProvider: FC<Props> = ({ children }) => {
     accessToken: "",
     refreshToken: "",
     isLoggedIn: false,
-    state: "PENDING",
+    state: AuthState.PENDING,
   });
 
-  const {
-    mutateAsync: callRefreshTokenAPI,
-    status: loadingRefreshToken,
-    ...rest
-  } = useRefreshToken();
+  const { mutateAsync: callRefreshTokenAPI } = useRefreshToken();
 
   const restoreAcessToken = useCallback(
     async (oldRefreshToken: string) => {
@@ -69,37 +69,18 @@ const AuthProvider: FC<Props> = ({ children }) => {
     const accessToken = TokenService.getAccessToken();
     const refreshToken = TokenService.getRefreshToken();
     const expiresAt = TokenService.getExpiresAt();
-
-    // if (refreshToken) {
-    // TokenService.setAxiosHeaders(accessToken);
-    // FIXME: remove setTimeout
-    // setTimeout(() => {
-    const hasAccessToken = accessToken;
     if (
       isNotEmpty(accessToken) &&
       isNotEmpty(refreshToken) &&
-      auth.state !== "READY"
+      auth.state !== AuthState.READY
     ) {
-      // setAuth({
-      //   accessToken,
-      //   refreshToken,
-      //   // assuming already logged in due to presense of access token
-      //   isLoggedIn: true,
-      //   state: "READY",
-      // });
       login(accessToken, refreshToken, parseInt(expiresAt || "0"));
-    } else if (isEmpty(refreshToken) && auth.state !== "READY") {
-      // setAuth({
-      //   accessToken,
-      //   refreshToken,
-      //   isLoggedIn: false,
-      //   state: "READY",
-      // });
+    } else if (isEmpty(refreshToken) && auth.state !== AuthState.READY) {
       login(accessToken ?? "", refreshToken ?? "", parseInt(expiresAt || "0"));
     } else if (
       isNotEmpty(refreshToken) &&
-      auth.state !== "READY" &&
-      !hasAccessToken?.length
+      auth.state !== AuthState.READY &&
+      isNotEmpty(accessToken)
     ) {
       restoreAcessToken(refreshToken ?? "");
     }
@@ -115,7 +96,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
       accessToken: accessToken ?? "",
       refreshToken: refreshToken ?? "",
       isLoggedIn: !!accessToken?.length,
-      state: "READY",
+      state: AuthState.READY,
     });
     TokenService.saveTokens(
       accessToken ?? "",
@@ -130,7 +111,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
       accessToken: "",
       refreshToken: "",
       isLoggedIn: false,
-      state: "READY",
+      state: AuthState.READY,
     });
   };
 
@@ -147,7 +128,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
     [auth]
   );
 
-  if (auth.state !== "READY") {
+  if (auth.state !== AuthState.READY) {
     return <div>restoring...</div>;
   }
 
